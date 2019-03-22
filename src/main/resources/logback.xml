@@ -1,19 +1,35 @@
 <configuration>
-    <property name="root.level.console" value="WARN"/>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>log/wendys-rennpferde%d{yyyy-MM-dd}.log</fileNamePattern>
 
-    <timestamp key="day" datePattern="yyyy-MM-dd"/>
+      <!-- keep 30 days' worth of history capped at 3GB total size -->
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>3GB</totalSizeCap>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} | %-5level | %40logger{0}: %msg%n</pattern>
-        </encoder>
-    </appender>
+    </rollingPolicy>
 
-    <logger name="at.ac.tuwien.sepm.assignment.individual" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+    <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+        </pattern>
+    </encoder>
+  </appender> 
 
-    <root level="WARN">
-        <appender-ref ref="STDOUT"/>
-    </root>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>DEBUG</level>
+        <onMatch>DENY</onMatch>
+        <onMismatch>ACCEPT</onMismatch>
+    </filter>
+    <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+        </pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
 </configuration>
