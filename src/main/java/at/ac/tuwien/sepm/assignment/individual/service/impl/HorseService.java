@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 @Service
 public class HorseService implements IHorseService {
@@ -37,6 +38,10 @@ public class HorseService implements IHorseService {
 
     @Override
     public Horse createOne(Horse newHorse) throws ServiceException {
+        LocalDateTime currentTime = LocalDateTime.now();
+        newHorse.setCreated(currentTime);
+        newHorse.setUpdated(currentTime);
+
         try {
             if (horseValidator.validate(newHorse)) return horseDao.createOne(newHorse);
 

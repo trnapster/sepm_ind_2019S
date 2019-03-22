@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -66,10 +67,11 @@ public class HorseDao implements IHorseDao {
     public Horse createOne(Horse horse) throws PersistenceException {
         LOGGER.info("Create horse: " + horse);
         String sql = "INSERT INTO Horse "
-            + "(name, breed, min_speed, max_speed, created_at, updated_at)"
+            + "(name, breed, min_speed, max_speed, created, updated)"
             + "values(?,?,?,?,?,?)";
+
         try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, horse.getName());
             statement.setString(2, horse.getBreed());
             statement.setDouble(3, horse.getMinSpeed());
@@ -80,9 +82,10 @@ public class HorseDao implements IHorseDao {
 
             if (rows == 0) throw new SQLException("No new rows generated");
 
-            ResultSet generatedKeySet = statement.getGeneratedKeys();
-            if (generatedKeySet.next()) {
-              horse.setId(generatedKeySet.getInt(1));
+            ResultSet rs = statement.getGeneratedKeys();
+
+            if (rs.next()) {
+              horse.setId(rs.getInt(1));
             }
             else {
               throw new SQLException("No ID obtained");

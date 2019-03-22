@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,7 +45,13 @@ public class HorseEndpoint {
     }
 
     @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
     public HorseDto createOne(@RequestBody HorseDto newHorse) {
-      return newHorse;
+        LOGGER.info("POST " + BASE_URL + "/ Body: " + newHorse);
+        try {
+            return horseMapper.entityToDto(horseService.createOne(horseMapper.dtoToEntity(newHorse)));
+        } catch (ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error during creation of horse: " + newHorse, e);
+        }
     }
 }
