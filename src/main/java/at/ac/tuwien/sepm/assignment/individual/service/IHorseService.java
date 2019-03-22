@@ -14,4 +14,11 @@ public interface IHorseService {
      */
     Horse findOneById(Integer id) throws ServiceException, NotFoundException;
 
+
+    /**
+     * @param newHorse the horse that will be created
+     * @return the horse that has been created
+     * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     */
+    Horse createOne(Horse horse) throws ServiceException;
 }

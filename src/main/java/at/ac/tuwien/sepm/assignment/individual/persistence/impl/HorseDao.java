@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 
 @Repository
@@ -58,6 +59,40 @@ public class HorseDao implements IHorseDao {
             return horse;
         } else {
             throw new NotFoundException("Could not find horse with id " + id);
+        }
+    }
+
+    @Override
+    public Horse createOne(Horse horse) throws PersistenceException {
+        LOGGER.info("Create horse: " + horse);
+        String sql = "INSERT INTO Horse "
+            + "(name, breed, min_speed, max_speed, created_at, updated_at)"
+            + "values(?,?,?,?,?,?)";
+        try {
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+            statement.setString(1, horse.getName());
+            statement.setString(2, horse.getBreed());
+            statement.setDouble(3, horse.getMinSpeed());
+            statement.setDouble(4, horse.getMaxSpeed());
+            statement.setTimestamp(5, Timestamp.valueOf(horse.getCreated()));
+            statement.setTimestamp(6, Timestamp.valueOf(horse.getUpdated()));
+            int rows = statement.executeUpdate();
+
+            if (rows == 0) throw new SQLException("No new rows generated");
+
+            ResultSet generatedKeySet = statement.getGeneratedKeys();
+            if (generatedKeySet.next()) {
+              horse.setId(generatedKeySet.getInt(1));
+            }
+            else {
+              throw new SQLException("No ID obtained");
+            }
+
+            return horse;
+
+        } catch (SQLException e) {
+            LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
+            throw new PersistenceException("Could not create horse: " + horse, e);
         }
     }
 }
