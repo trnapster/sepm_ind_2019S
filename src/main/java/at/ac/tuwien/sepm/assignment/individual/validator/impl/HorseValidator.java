@@ -23,11 +23,12 @@ public class HorseValidator implements IHorseValidator {
     }
 
     private boolean hasValidName(Horse horse) {
-      return !horse.getName().isEmpty() && horse.getName() != null;
+      return horse.getName() != null && horse.getName().isEmpty();
     }
 
     private boolean hasValidSpeed(Horse horse) {
-        return horse.getMinSpeed() >= MINSPEED && horse.getMaxSpeed() >= MINSPEED
+        return horse.getMinSpeed() != null && horse.getMaxSpeed() != null 
+            && horse.getMinSpeed() >= MINSPEED && horse.getMaxSpeed() >= MINSPEED
             && horse.getMinSpeed() <= MAXSPEED && horse.getMaxSpeed() <= MAXSPEED
             && horse.getMinSpeed() <= horse.getMaxSpeed();
     }

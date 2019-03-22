@@ -51,7 +51,7 @@ public class HorseEndpoint {
         try {
             return horseMapper.entityToDto(horseService.createOne(horseMapper.dtoToEntity(newHorse)));
         } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error during creation of horse: " + newHorse, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during creation of horse: " + newHorse, e);
         }
     }
 }
