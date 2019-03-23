@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/horses")
@@ -50,11 +52,29 @@ public class HorseEndpoint {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<HorseDto> getAll() {
+    public List<HorseDto> getAllFiltered(
+            @RequestParam Optional<String> name, 
+            @RequestParam Optional<String> breed,
+            @RequestParam Optional<Double> minSpeed, 
+            @RequestParam Optional<Double> maxSpeed) {
         LOGGER.info("GET " + BASE_URL);
 
+        String actualName = name.orElse(null);
+        String actualBreed = breed.orElse(null);
+        Double actualMinSpeed = minSpeed.orElse(null);
+        Double actualMaxSpeed = maxSpeed.orElse(null);
+
+        HorseDto filter = new HorseDto(
+            null, 
+            actualName, 
+            actualBreed, 
+            actualMinSpeed, 
+            actualMaxSpeed, 
+            null, 
+            null);
+
         try {
-            return horseMapper.entityToDto(horseService.getAll());
+            return horseMapper.entityToDto(horseService.getAllFiltered(horseMapper.dtoToEntity(filter)));
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
                 "Error during read horses" , e);

@@ -41,10 +41,22 @@ public class HorseService implements IHorseService {
 
     @Override
     public List<Horse> getAll() throws ServiceException {
-        LOGGER.info("Get all horses ");
+        LOGGER.info("Get all horses");
+        return null;
+    }
+
+    @Override
+    public List<Horse> getAllFiltered(Horse filter) throws ServiceException {
+        LOGGER.info("Get all horses with filter: " + filter);
 
         try {
-            return horseDao.getAll();
+            if (filter.getName() == null && filter.getBreed() == null 
+                  && filter.getMinSpeed() == null && filter.getMaxSpeed() == null) {
+                return horseDao.getAll();
+            }
+            else {
+                return horseDao.getAllFiltered(filter);
+            }
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

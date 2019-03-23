@@ -21,6 +21,13 @@ public interface IHorseService {
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
     List<Horse> getAll() throws ServiceException;
+    
+    /**
+     * @param filter the filter that will be applied
+     * @return all horses in the system that match the filter
+     * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     */
+    List<Horse> getAllFiltered(Horse filter) throws ServiceException;
 
     /**
      * @param newHorse the horse that will be created

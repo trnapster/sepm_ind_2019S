@@ -152,6 +152,67 @@ public class HorseDao implements IHorseDao {
     }
 
     @Override
+    public List<Horse> getAllFiltered(Horse filter) throws PersistenceException {
+        LOGGER.info("Get all horses with filter: " + filter);
+        String sql = "SELECT * FROM Horse WHERE NOT obsolete";
+        int parameterCount = 0;
+        int nameIndex = 0; 
+        int breedIndex = 0; 
+        int minSpeedIndex = 0; 
+        int maxSpeedIndex = 0;
+        List<Horse> horses = new ArrayList<Horse>();
+
+        if (filter.getName() != null) {
+            sql += " AND LOWER(name) LIKE LOWER( ? )";
+            parameterCount++;
+            nameIndex = parameterCount;
+        }
+        if (filter.getBreed() != null) {
+            sql += " AND LOWER(breed) LIKE LOWER( ? )";
+            parameterCount++;
+            breedIndex = parameterCount;
+        }
+        if (filter.getMinSpeed() != null) {
+            sql += " AND min_speed >= ?";
+            parameterCount++;
+            minSpeedIndex = parameterCount;
+        }
+        if (filter.getMaxSpeed() != null) {
+            sql += " AND max_speed <= ?";
+            parameterCount++;
+            maxSpeedIndex = parameterCount;
+        }
+
+
+        try {
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+
+            if (filter.getName() != null) {
+                statement.setString(nameIndex, "%" + filter.getName() + "%");
+            }
+            if (filter.getBreed() != null) {
+                statement.setString(breedIndex, "%" + filter.getBreed() + "%");
+            }
+            if (filter.getMinSpeed() != null) {
+                statement.setDouble(minSpeedIndex, filter.getMinSpeed());
+            }
+            if (filter.getMaxSpeed() != null) {
+                statement.setDouble(maxSpeedIndex, filter.getMaxSpeed());
+            }
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Horse horse = dbResultToHorseDto(result);
+                horses.add(horse);
+            }
+            return horses;
+        } catch (SQLException e) {
+            LOGGER.error("Problem while executing SQL select statement for reading horse with id ", e);
+            throw new PersistenceException("Could not read horses", e);
+        }
+    }
+
+    @Override
     public Horse createOne(Horse horse) throws PersistenceException {
         LOGGER.info("Create horse: " + horse);
         try {
