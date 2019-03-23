@@ -22,10 +22,16 @@ public interface IHorseDao {
     Horse createOne(Horse horse) throws PersistenceException;
 
     /**
-     * @param id of the old horse
+     * @param id of the horse that will be updated
      * @param horse the new horse
      * @return the horse that has been updated
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
      */
     Horse updateOne(Integer id, Horse horse) throws PersistenceException;
+
+    /**
+     * @param id of the horse that will be deleted
+     * @throws PersistenceException will be thrown if something goes wrong during the database access.
+     */
+    void deleteOne(Integer id) throws PersistenceException, NotFoundException;
 }

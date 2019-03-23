@@ -52,7 +52,7 @@ public class HorseService implements IHorseService {
     }
 
     @Override
-    public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException{
+    public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException {
         LocalDateTime currentTime = LocalDateTime.now();
         updatedHorse.setUpdated(currentTime);
 
@@ -82,6 +82,15 @@ public class HorseService implements IHorseService {
         try {
             horseValidator.validate(updatedHorse);
             return horseDao.updateOne(id, updatedHorse);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void deleteOne(Integer id) throws ServiceException, NotFoundException {
+        try {
+            horseDao.deleteOne(id);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

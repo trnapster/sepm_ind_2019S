@@ -29,4 +29,11 @@ public interface IHorseService {
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
     Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException;
+
+    /**
+     * @param id of horse that should be deleted
+     * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     * @throws NotFoundException will be thrown if the horse could not be found in the system.
+     */
+    void deleteOne(Integer id) throws ServiceException, NotFoundException;
 }

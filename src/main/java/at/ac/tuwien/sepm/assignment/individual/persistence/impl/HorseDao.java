@@ -95,6 +95,16 @@ public class HorseDao implements IHorseDao {
         }
     }
 
+    private void obsolete(int id) throws PersistenceException, SQLException, NotFoundException {
+        String sql = "UPDATE Horse SET obsolete = TRUE WHERE public_id = ? AND NOT obsolete";
+
+        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+        statement.setInt(1, id);
+        int rows = statement.executeUpdate();
+
+        if (rows == 0) throw new SQLException("No rows deleted");
+    }
+
     @Override
     public Horse findOneById(Integer id) throws PersistenceException, NotFoundException {
         LOGGER.info("Get horse with id " + id);
@@ -132,17 +142,23 @@ public class HorseDao implements IHorseDao {
     @Override
     public Horse updateOne(Integer id, Horse horse) throws PersistenceException {
         LOGGER.info("Update horse: " + horse);
-        String sql = "UPDATE Horse SET obsolete = TRUE WHERE public_id = ? AND NOT obsolete";
-
         try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, id);
-            int rows = statement.executeUpdate();
-
+            obsolete(id);
             return getRow(insert(horse));
         } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
-            throw new PersistenceException("Could not create horse: " + horse, e);
+            LOGGER.error("Problem while executing SQL update statement for updating horse with id: " + id, e);
+            throw new PersistenceException("Could not update horse with id" + id, e);
+        }
+    }
+
+    @Override
+    public void deleteOne(Integer id) throws PersistenceException, NotFoundException {
+        LOGGER.info("Delete horse with id: " + id);
+        try {
+            obsolete(id);
+        } catch (SQLException | NotFoundException e) {
+            LOGGER.error("Problem while executing SQL delete statement for deleting horse with id : " + id, e);
+            throw new PersistenceException("Could not delete horse with id" + id, e);
         }
     }
 }

@@ -38,9 +38,11 @@ public class HorseEndpoint {
         try {
             return horseMapper.entityToDto(horseService.findOneById(id));
         } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error during read horse with id " + id, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error during read horse with id " + id, e);
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error during reading horse: " + e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                "Error during reading horse: " + e.getMessage(), e);
         }
     }
 
@@ -51,7 +53,8 @@ public class HorseEndpoint {
         try {
             return horseMapper.entityToDto(horseService.createOne(horseMapper.dtoToEntity(newHorse)));
         } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during saving horse: " + e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Error during saving horse: " + e.getMessage(), e);
         }
     }
 
@@ -62,7 +65,23 @@ public class HorseEndpoint {
         try {
             return horseMapper.entityToDto(horseService.updateOne(id, horseMapper.dtoToEntity(updatedHorse)));
         } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during updating of horse: " + updatedHorse, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Error during updating of horse: " + e.getMessage(), e);
+        }
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteOne(@PathVariable("id") Integer id) {
+        LOGGER.info("PUT " + BASE_URL + "/" + id);
+        try {
+            horseService.deleteOne(id);
+        } catch (ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error during deletion of horse: " + e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                "Error during deletion of horse: " + e.getMessage(), e);
         }
     }
 }
