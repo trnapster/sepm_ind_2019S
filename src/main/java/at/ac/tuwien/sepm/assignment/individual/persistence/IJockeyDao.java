@@ -17,12 +17,6 @@ public interface IJockeyDao {
     Jockey findOneById(Integer id) throws PersistenceException, NotFoundException;
 
     /**
-     * @return all jockeys in the database
-     * @throws PersistenceException will be thrown if something goes wrong during the database access.
-     */
-    List<Jockey> getAll() throws PersistenceException;
-
-    /**
      * @param filter the filter that will be applied
      * @return all jockeys in the database that match the filter
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
