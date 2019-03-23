@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.individual.util.mapper;
 import at.ac.tuwien.sepm.assignment.individual.rest.dto.SimulationRequestDto;
 import at.ac.tuwien.sepm.assignment.individual.rest.dto.SimulationResponseDto;
 import at.ac.tuwien.sepm.assignment.individual.rest.dto.SimulationParticipantDto;
+import at.ac.tuwien.sepm.assignment.individual.rest.dto.HorseJockeyCombinationDto;
 import at.ac.tuwien.sepm.assignment.individual.entity.Simulation;
 import at.ac.tuwien.sepm.assignment.individual.entity.SimulationParticipant;
 import at.ac.tuwien.sepm.assignment.individual.entity.Horse;
@@ -35,11 +36,19 @@ public class SimulationMapper {
     }
 
     public SimulationResponseDto entityToDto(Simulation simulation) {
+        List<HorseJockeyCombinationDto> horseJockeyCombinationDtos = null;
+        if (simulation.getSimulationParticipants() != null) {
+            horseJockeyCombinationDtos = new ArrayList<HorseJockeyCombinationDto>();
+            for(SimulationParticipant participant : simulation.getSimulationParticipants()) {
+                HorseJockeyCombinationDto horseJockeyCombinationDto = entityToDto(participant);
+                horseJockeyCombinationDtos.add(horseJockeyCombinationDto);
+            }
+        }
         return new SimulationResponseDto(
             simulation.getId(),
             simulation.getName(),
             simulation.getCreated(),
-            null);
+            horseJockeyCombinationDtos);
     }
 
     public List<SimulationResponseDto> entityToDto(Collection<Simulation> simulations) {
@@ -49,6 +58,18 @@ public class SimulationMapper {
             simulationResponseDtos.add(simulationResponseDto);
         }
         return simulationResponseDtos;
+    }
+
+    private HorseJockeyCombinationDto entityToDto(SimulationParticipant participant) {
+        return new HorseJockeyCombinationDto(
+            participant.getId(),
+            participant.getRank(),
+            participant.getHorse().getName(),
+            participant.getJockey().getName(),
+            participant.getAvgSpeed(),
+            participant.getHorseSpeed(),
+            participant.getSkill(),
+            participant.getLuckFactor());
     }
 
     private SimulationParticipant dtoToEntity(SimulationParticipantDto simulationParticipantDto) {

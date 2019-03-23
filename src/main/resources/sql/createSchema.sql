@@ -30,14 +30,15 @@ CREATE TABLE IF NOT EXISTS simulation(
 );
 
 CREATE TABLE IF NOT EXISTS simulation_participant(
-  simulation_id   BIGINT,
-  horse_id        BIGINT,
-  jockey_id       BIGINT,
+  id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+  simulation_id   BIGINT    NOT NULL,
+  horse_id        BIGINT    NOT NULL,
+  jockey_id       BIGINT    NOT NULL,
+  rank            BIGINT    NOT NULL,
   avg_speed       DECIMAL   NOT NULL,
   horse_speed     DECIMAL   NOT NULL,
   skill           DECIMAL   NOT NULL,
   luck_factor     DOUBLE    NOT NULL,
-  Primary Key(simulation_id, horse_id, jockey_id),
   FOREIGN KEY(simulation_id) REFERENCES simulation(id),
   FOREIGN KEY(horse_id) REFERENCES horse(id),
   FOREIGN KEY(jockey_id) REFERENCES jockey(id)

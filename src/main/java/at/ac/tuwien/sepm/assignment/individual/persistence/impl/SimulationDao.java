@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.assignment.individual.persistence.impl;
 
+import at.ac.tuwien.sepm.assignment.individual.entity.Horse;
+import at.ac.tuwien.sepm.assignment.individual.entity.Jockey;
 import at.ac.tuwien.sepm.assignment.individual.entity.Simulation;
+import at.ac.tuwien.sepm.assignment.individual.entity.SimulationParticipant;
 import at.ac.tuwien.sepm.assignment.individual.exceptions.NotFoundException;
 import at.ac.tuwien.sepm.assignment.individual.persistence.ISimulationDao;
 import at.ac.tuwien.sepm.assignment.individual.persistence.exceptions.PersistenceException;
@@ -19,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 
 
 @Repository
@@ -32,12 +36,49 @@ public class SimulationDao implements ISimulationDao {
         this.dbConnectionManager = dbConnectionManager;
     }
 
-    private static Simulation dbResultToSimulationDto(ResultSet result) throws SQLException {
+    private static Simulation dbResultToSimulationDto(ResultSet result, boolean returnParticipants) throws SQLException {
+        Integer id = result.getInt("id");
+        String name = result.getString("name");
+        LocalDateTime created = result.getTimestamp("created").toLocalDateTime();
+        List<SimulationParticipant> simulationParticipants = null;
+
+        if (returnParticipants) {
+            simulationParticipants = new ArrayList<SimulationParticipant>();
+            do {
+                Horse horse = new Horse(
+                    null,
+                    result.getString("horse_name"),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+                Jockey jockey = new Jockey(
+                    null,
+                    result.getString("jockey_name"),
+                    null,
+                    null,
+                    null);
+
+                SimulationParticipant simulationParticipant = new SimulationParticipant(
+                    result.getInt("participant_id"),
+                    result.getInt("rank"),
+                    horse,
+                    jockey,
+                    result.getBigDecimal("avg_speed"),
+                    result.getBigDecimal("horse_speed"),
+                    result.getBigDecimal("skill"),
+                    result.getDouble("luck_factor"));
+                simulationParticipants.add(simulationParticipant);
+            } while(result.next());
+        }
+
         return new Simulation(
-            result.getInt("id"),
-            result.getString("name"),
-            result.getTimestamp("created").toLocalDateTime(),
-            null);
+            id,
+            name,
+            created,
+            simulationParticipants);
     }
     
     /*
@@ -109,14 +150,25 @@ public class SimulationDao implements ISimulationDao {
     @Override
     public Simulation findOneById(Integer id) throws PersistenceException, NotFoundException {
         LOGGER.info("Get simulation with id " + id);
-        String sql = "SELECT * FROM Simulation WHERE id=?";
+        String sql = "SELECT simulation.id id, simulation.name name," 
+            + " simulation.created created, simulation_participant.id participant_id,"
+            + " simulation_participant.rank rank, horse.name horse_name,"
+            + " jockey.name jockey_name, simulation_participant.avg_speed avg_speed," 
+            + " simulation_participant.horse_speed horse_speed, simulation_participant.skill skill," 
+            + " simulation_participant.luck_factor luck_factor"
+            + " FROM simulation_participant"
+            + " JOIN horse ON horse.id=simulation_participant.horse_id"
+            + " JOIN jockey ON jockey.id=simulation_participant.jockey_id"
+            + " RIGHT JOIN simulation ON simulation.id=simulation_participant.simulation_id"
+            + " WHERE simulation.id = ?"
+            + " ORDER BY rank ASC";
         Simulation simulation = null;
         try {
             PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                simulation = dbResultToSimulationDto(result);
+                simulation = dbResultToSimulationDto(result, true);
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL select statement for reading simulation with id " + id, e);
@@ -148,7 +200,7 @@ public class SimulationDao implements ISimulationDao {
 
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                Simulation simulation = dbResultToSimulationDto(result);
+                Simulation simulation = dbResultToSimulationDto(result, false);
                 simulations.add(simulation);
             }
             return simulations;
