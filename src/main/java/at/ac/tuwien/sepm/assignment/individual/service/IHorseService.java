@@ -15,16 +15,10 @@ public interface IHorseService {
      * @throws NotFoundException will be thrown if the horse could not be found in the system.
      */
     Horse findOneById(Integer id) throws ServiceException, NotFoundException;
-
-    /**
-     * @return all horses in the system
-     * @throws ServiceException  will be thrown if something goes wrong during data processing.
-     */
-    List<Horse> getAll() throws ServiceException;
     
     /**
      * @param filter the filter that will be applied
-     * @return all horses in the system that match the filter
+     * @return all horses in the system that match the filter. If filter is empty return all horses.
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
     List<Horse> getAllFiltered(Horse filter) throws ServiceException;

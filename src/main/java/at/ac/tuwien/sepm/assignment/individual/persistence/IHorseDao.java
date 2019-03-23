@@ -17,14 +17,8 @@ public interface IHorseDao {
     Horse findOneById(Integer id) throws PersistenceException, NotFoundException;
 
     /**
-     * @return all horses in the database
-     * @throws PersistenceException will be thrown if something goes wrong during the database access.
-     */
-    List<Horse> getAll() throws PersistenceException;
-
-    /**
      * @param filter the filter that will be applied
-     * @return all horses in the database that match the filter
+     * @return all horses in the database that match the filter. Return all horses if filter is empty.
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
      */
     List<Horse> getAllFiltered(Horse filter) throws PersistenceException;

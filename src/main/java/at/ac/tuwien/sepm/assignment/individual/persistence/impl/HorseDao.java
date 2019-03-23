@@ -132,26 +132,6 @@ public class HorseDao implements IHorseDao {
     }
 
     @Override
-    public List<Horse> getAll() throws PersistenceException {
-        LOGGER.info("Get all horses ");
-        String sql = "SELECT * FROM Horse WHERE NOT obsolete";
-        List<Horse> horses = new ArrayList<Horse>();
-
-        try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                Horse horse = dbResultToHorseDto(result);
-                horses.add(horse);
-            }
-            return horses;
-        } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading horse with id ", e);
-            throw new PersistenceException("Could not read horses", e);
-        }
-    }
-
-    @Override
     public List<Horse> getAllFiltered(Horse filter) throws PersistenceException {
         LOGGER.info("Get all horses with filter: " + filter);
         String sql = "SELECT * FROM Horse WHERE NOT obsolete";
