@@ -45,32 +45,34 @@ public class SimulationDao implements ISimulationDao {
         if (returnParticipants) {
             simulationParticipants = new ArrayList<SimulationParticipant>();
             do {
-                Horse horse = new Horse(
-                    null,
-                    result.getString("horse_name"),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
+                if (result.getInt("participant_id") > 0) {
+                    Horse horse = new Horse(
+                        null,
+                        result.getString("horse_name"),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
 
-                Jockey jockey = new Jockey(
-                    null,
-                    result.getString("jockey_name"),
-                    null,
-                    null,
-                    null);
+                    Jockey jockey = new Jockey(
+                        null,
+                        result.getString("jockey_name"),
+                        null,
+                        null,
+                        null);
 
-                SimulationParticipant simulationParticipant = new SimulationParticipant(
-                    result.getInt("participant_id"),
-                    result.getInt("rank"),
-                    horse,
-                    jockey,
-                    result.getBigDecimal("avg_speed"),
-                    result.getBigDecimal("horse_speed"),
-                    result.getBigDecimal("skill"),
-                    result.getDouble("luck_factor"));
-                simulationParticipants.add(simulationParticipant);
+                    SimulationParticipant simulationParticipant = new SimulationParticipant(
+                        result.getInt("participant_id"),
+                        result.getInt("rank"),
+                        horse,
+                        jockey,
+                        result.getBigDecimal("avg_speed"),
+                        result.getBigDecimal("horse_speed"),
+                        result.getBigDecimal("skill"),
+                        result.getDouble("luck_factor"));
+                    simulationParticipants.add(simulationParticipant);
+                }
             } while(result.next());
         }
 
