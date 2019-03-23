@@ -70,8 +70,12 @@ public class SimulationMapper {
 
         return new SimulationParticipant(
             null,
+            null,
             horse,
             jockey,
+            null,
+            null,
+            null,
             simulationParticipantDto.getLuckFactor());
     }
 }

@@ -112,7 +112,7 @@ public class HorseJockeyCombinationDto {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, skill, horseName, jockeyName, avgSpeed, horseSpeed, 
+        return Objects.hash(id, rank, horseName, jockeyName, avgSpeed, horseSpeed, 
             skill, luckFactor);
     }
 

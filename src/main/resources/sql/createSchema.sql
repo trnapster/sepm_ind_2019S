@@ -33,6 +33,12 @@ CREATE TABLE IF NOT EXISTS simulation_participant(
   simulation_id   BIGINT,
   horse_id        BIGINT,
   jockey_id       BIGINT,
+  avg_speed       DECIMAL   NOT NULL,
+  horse_speed     DECIMAL   NOT NULL,
+  skill           DECIMAL   NOT NULL,
   luck_factor     DOUBLE    NOT NULL,
-  Primary Key(simulation_id, horse_id, jockey_id)
+  Primary Key(simulation_id, horse_id, jockey_id),
+  FOREIGN KEY(simulation_id) REFERENCES simulation(id),
+  FOREIGN KEY(horse_id) REFERENCES horse(id),
+  FOREIGN KEY(jockey_id) REFERENCES jockey(id)
 );

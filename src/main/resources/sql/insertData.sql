@@ -14,3 +14,8 @@ INSERT INTO simulation (NAME, CREATED)
 VALUES ('Sim1', CURRENT_TIMESTAMP()),
   ('Sim2', CURRENT_TIMESTAMP()),
   ('Sim3', CURRENT_TIMESTAMP());
+
+INSERT INTO simulation_participant (simulation_id, horse_id, jockey_id, avg_speed, horse_speed, skill, luck_factor)
+VALUES (1, 1, 2, 50.0, 55.0, 20.0, 1.0),
+  (1, 2, 1, 40.0, 42.0, 24.0, 1.1),
+  (2, 3, 3, 60, 50, -1.0, 0.9);

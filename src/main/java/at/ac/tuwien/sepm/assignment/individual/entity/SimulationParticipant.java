@@ -9,17 +9,27 @@ import java.math.BigDecimal;
 
 public class SimulationParticipant {
     private Integer id;
+    private Integer rank;
     private Horse horse;
     private Jockey jockey;
+    private BigDecimal avgSpeed;
+    private BigDecimal horseSpeed;
+    private BigDecimal skill;
     private Double luckFactor;
 
     public SimulationParticipant() {
     }
 
-    public SimulationParticipant(Integer id, Horse horse, Jockey jockey, Double luckFactor) {
+    public SimulationParticipant(Integer id, Integer rank, Horse horse, 
+            Jockey jockey, BigDecimal avgSpeed, BigDecimal horseSpeed, 
+            BigDecimal skill, Double luckFactor) {
         this.id = id;
+        this.rank = rank;
         this.horse = horse;
         this.jockey = jockey;
+        this.avgSpeed = avgSpeed;
+        this.horseSpeed = horseSpeed;
+        this.skill = skill;
         this.luckFactor = luckFactor;
     }
 
@@ -29,6 +39,14 @@ public class SimulationParticipant {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
     public Horse getHorse() {
@@ -47,6 +65,30 @@ public class SimulationParticipant {
         this.jockey = jockey;
     }
 
+    public BigDecimal getAvgSpeed() {
+        return avgSpeed;
+    }
+
+    public void setAvgSpeed(BigDecimal avgSpeed) {
+        this.avgSpeed = avgSpeed;
+    }
+
+    public BigDecimal getHorseSpeed() {
+        return horseSpeed;
+    }
+
+    public void setHorseSpeed(BigDecimal horseSpeed) {
+        this.horseSpeed = horseSpeed;
+    }
+
+    public BigDecimal getSkill() {
+        return skill;
+    }
+
+    public void setSkill(BigDecimal skill) {
+        this.skill = skill;
+    }
+
     public Double getLuckFactor() {
         return luckFactor;
     }
@@ -61,23 +103,32 @@ public class SimulationParticipant {
         if (!(o instanceof SimulationParticipant)) return false;
         SimulationParticipant simulationParticipant = (SimulationParticipant) o;
         return Objects.equals(id, simulationParticipant.id) &&
+            Objects.equals(rank, simulationParticipant.rank) &&
             Objects.equals(horse, simulationParticipant.horse) &&
             Objects.equals(jockey, simulationParticipant.jockey) &&
+            Objects.equals(avgSpeed, simulationParticipant.avgSpeed) &&
+            Objects.equals(horseSpeed, simulationParticipant.horseSpeed) &&
+            Objects.equals(skill, simulationParticipant.skill) &&
             Objects.equals(luckFactor, simulationParticipant.luckFactor);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, horse, jockey, luckFactor);
+        return Objects.hash(id, horse, jockey, avgSpeed, horseSpeed, 
+            skill, luckFactor);
     }
 
     @Override
     public String toString() {
         return "SimulationParticipant{" +
             "id=" + id +
+            "rank=" + rank +
             ", horse='" + horse + '\'' +
             ", jockey='" + jockey + '\'' +
+            ", avgSpeed=" + avgSpeed +
+            ", horseSpeed=" + horseSpeed +
+            ", skill=" + skill +
             ", luckFactor=" + luckFactor +
             '}';
     }
