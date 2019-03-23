@@ -72,7 +72,7 @@ public class HorseDao implements IHorseDao {
                 return rs.getInt(1);
             }
             else {
-                throw new SQLException("No ID obtained");
+                throw new PersistenceException("No ID obtained");
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
@@ -105,7 +105,7 @@ public class HorseDao implements IHorseDao {
         statement.setInt(1, id);
         int rows = statement.executeUpdate();
 
-        if (rows == 0) throw new SQLException("No rows deleted");
+        if (rows == 0) throw new NotFoundException("Could not delete Horse with ID: " + id);
     }
 
     @Override

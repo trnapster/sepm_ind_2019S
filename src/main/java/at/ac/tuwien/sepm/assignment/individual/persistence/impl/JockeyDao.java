@@ -60,7 +60,7 @@ public class JockeyDao implements IJockeyDao {
             statement.setTimestamp(5, Timestamp.valueOf(jockey.getUpdated()));
             int rows = statement.executeUpdate();
 
-            if (rows == 0) throw new SQLException("No new rows generated");
+            if (rows == 0) throw new PersistenceException("No new rows generated");
 
             ResultSet rs = statement.getGeneratedKeys();
 
@@ -68,7 +68,7 @@ public class JockeyDao implements IJockeyDao {
                 return rs.getInt(1);
             }
             else {
-                throw new SQLException("No ID obtained");
+                throw new PersistenceException("No ID obtained");
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting jockey: " + jockey, e);
@@ -101,7 +101,7 @@ public class JockeyDao implements IJockeyDao {
         statement.setInt(1, id);
         int rows = statement.executeUpdate();
 
-        if (rows == 0) throw new SQLException("No rows deleted");
+        if (rows == 0) throw new NotFoundException("Could not delete jockey with id: " + id);
     }
 
     @Override
