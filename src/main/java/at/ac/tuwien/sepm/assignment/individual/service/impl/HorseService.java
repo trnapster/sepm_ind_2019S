@@ -7,11 +7,14 @@ import at.ac.tuwien.sepm.assignment.individual.persistence.exceptions.Persistenc
 import at.ac.tuwien.sepm.assignment.individual.service.IHorseService;
 import at.ac.tuwien.sepm.assignment.individual.validator.IHorseValidator;
 import at.ac.tuwien.sepm.assignment.individual.service.exceptions.ServiceException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class HorseService implements IHorseService {
@@ -31,6 +34,17 @@ public class HorseService implements IHorseService {
         LOGGER.info("Get horse with id " + id);
         try {
             return horseDao.findOneById(id);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Horse> getAll() throws ServiceException {
+        LOGGER.info("Get all horses ");
+
+        try {
+            return horseDao.getAll();
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

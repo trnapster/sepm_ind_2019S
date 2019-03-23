@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.assignment.individual.exceptions.NotFoundException;
 import at.ac.tuwien.sepm.assignment.individual.service.IHorseService;
 import at.ac.tuwien.sepm.assignment.individual.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.assignment.individual.util.mapper.HorseMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/horses")
@@ -43,6 +46,18 @@ public class HorseEndpoint {
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during reading horse: " + e.getMessage(), e);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<HorseDto> getAll() {
+        LOGGER.info("GET " + BASE_URL);
+
+        try {
+            return horseMapper.entityToDto(horseService.getAll());
+        } catch (ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error during read horses" , e);
         }
     }
 

@@ -5,11 +5,14 @@ import at.ac.tuwien.sepm.assignment.individual.exceptions.NotFoundException;
 import at.ac.tuwien.sepm.assignment.individual.persistence.IHorseDao;
 import at.ac.tuwien.sepm.assignment.individual.persistence.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.assignment.individual.persistence.util.DBConnectionManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -125,6 +128,26 @@ public class HorseDao implements IHorseDao {
             return horse;
         } else {
             throw new NotFoundException("Could not find horse with id " + id);
+        }
+    }
+
+    @Override
+    public List<Horse> getAll() throws PersistenceException {
+        LOGGER.info("Get all horses ");
+        String sql = "SELECT * FROM Horse WHERE NOT obsolete";
+        List<Horse> horses = new ArrayList<Horse>();
+
+        try {
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Horse horse = dbResultToHorseDto(result);
+                horses.add(horse);
+            }
+            return horses;
+        } catch (SQLException e) {
+            LOGGER.error("Problem while executing SQL select statement for reading horse with id ", e);
+            throw new PersistenceException("Could not read horses", e);
         }
     }
 
