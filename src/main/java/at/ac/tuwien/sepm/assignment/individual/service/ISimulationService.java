@@ -29,19 +29,4 @@ public interface ISimulationService {
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
     //Simulation createOne(Simulation simulation) throws ServiceException;
-
-    /**
-     * @param id of the old simulation
-     * @param updatedSimulation the new simulation
-     * @return the updated simulation
-     * @throws ServiceException  will be thrown if something goes wrong during data processing.
-     */
-    //Simulation updateOne(Integer id, Simulation updatedSimulation) throws ServiceException;
-
-    /**
-     * @param id of simulation that should be deleted
-     * @throws ServiceException  will be thrown if something goes wrong during data processing.
-     * @throws NotFoundException will be thrown if the simulation could not be found in the system.
-     */
-    //void deleteOne(Integer id) throws ServiceException, NotFoundException;
 }
