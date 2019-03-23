@@ -25,9 +25,9 @@ public class HorseValidator implements IHorseValidator {
     }
 
     private void validateName(Horse horse) throws ServiceException {
-      if (horse.getName() != null && horse.getName().isEmpty()) {
-          throw new ServiceException("Name must be set");
-      }
+        if (horse.getName() == null || horse.getName().isEmpty()) {
+            throw new ServiceException("Name must be set");
+        }
     }
 
     private void validateSpeed(Horse horse) throws ServiceException {
