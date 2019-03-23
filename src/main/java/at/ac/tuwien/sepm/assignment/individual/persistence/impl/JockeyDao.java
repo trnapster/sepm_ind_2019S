@@ -44,7 +44,7 @@ public class JockeyDao implements IJockeyDao {
     private int insert(Jockey jockey) throws PersistenceException {
         String sql = "INSERT INTO Jockey "
             + "(public_id, name, skill, created, updated)"
-            + "values(?,?,?,?,?,?,?)";
+            + "values(?,?,?,?,?)";
 
         try {
             PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -55,9 +55,9 @@ public class JockeyDao implements IJockeyDao {
                 statement.setNull(1, Types.INTEGER);
             }
             statement.setString(2, jockey.getName());
-            statement.setDouble(5, jockey.getSkill());
-            statement.setTimestamp(6, Timestamp.valueOf(jockey.getCreated()));
-            statement.setTimestamp(7, Timestamp.valueOf(jockey.getUpdated()));
+            statement.setDouble(3, jockey.getSkill());
+            statement.setTimestamp(4, Timestamp.valueOf(jockey.getCreated()));
+            statement.setTimestamp(5, Timestamp.valueOf(jockey.getUpdated()));
             int rows = statement.executeUpdate();
 
             if (rows == 0) throw new SQLException("No new rows generated");
