@@ -17,9 +17,14 @@ import java.util.ArrayList;
 public class SimulationMapper {
 
     public Simulation dtoToEntity(SimulationRequestDto simulationRequestDto) {
-        List<SimulationParticipant> simulationParticipants = new ArrayList<SimulationParticipant>();
-        for (SimulationParticipantDto simulationParticipantDto : simulationRequestDto.getSimulationParticipants()) {
-            simulationParticipants.add(dtoToEntity(simulationParticipantDto));
+        List<SimulationParticipant> simulationParticipants = null;
+
+        if(simulationRequestDto.getSimulationParticipants() != null) {
+            simulationParticipants = new ArrayList<SimulationParticipant>();
+            for (SimulationParticipantDto simulationParticipantDto 
+                    : simulationRequestDto.getSimulationParticipants()) {
+                simulationParticipants.add(dtoToEntity(simulationParticipantDto));
+            }
         }
 
         return new Simulation(
@@ -30,7 +35,11 @@ public class SimulationMapper {
     }
 
     public SimulationResponseDto entityToDto(Simulation simulation) {
-        return new SimulationResponseDto();
+        return new SimulationResponseDto(
+            simulation.getId(),
+            simulation.getName(),
+            simulation.getCreated(),
+            null);
     }
 
     public List<SimulationResponseDto> entityToDto(Collection<Simulation> simulations) {
