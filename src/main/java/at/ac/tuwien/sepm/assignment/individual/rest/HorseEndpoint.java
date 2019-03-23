@@ -51,7 +51,18 @@ public class HorseEndpoint {
         try {
             return horseMapper.entityToDto(horseService.createOne(horseMapper.dtoToEntity(newHorse)));
         } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during creation of horse: " + newHorse, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during saving horse: " + e.getMessage(), e);
+        }
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public HorseDto updateOne(@PathVariable("id") Integer id, @RequestBody HorseDto updatedHorse) {
+        LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedHorse);
+        try {
+            return horseMapper.entityToDto(horseService.updateOne(id, horseMapper.dtoToEntity(updatedHorse)));
+        } catch (ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error during updating of horse: " + updatedHorse, e);
         }
     }
 }

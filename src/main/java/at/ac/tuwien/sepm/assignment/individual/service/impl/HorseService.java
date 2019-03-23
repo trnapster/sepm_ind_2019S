@@ -39,13 +39,49 @@ public class HorseService implements IHorseService {
     @Override
     public Horse createOne(Horse newHorse) throws ServiceException {
         LocalDateTime currentTime = LocalDateTime.now();
+        newHorse.setId(null);
         newHorse.setCreated(currentTime);
         newHorse.setUpdated(currentTime);
 
         try {
-            if (horseValidator.validate(newHorse)) return horseDao.createOne(newHorse);
+            horseValidator.validate(newHorse);
+            return horseDao.createOne(newHorse);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
 
-            throw new ServiceException("Unable to create invalid horse: " + newHorse);
+    @Override
+    public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException{
+        LocalDateTime currentTime = LocalDateTime.now();
+        updatedHorse.setUpdated(currentTime);
+
+        try {
+            Horse oldHorse = horseDao.findOneById(id);
+            updatedHorse.setId(oldHorse.getId());
+
+            if (updatedHorse.getName() == null) {
+                updatedHorse.setName(oldHorse.getName());
+            }
+            if (updatedHorse.getBreed() == null) {
+                updatedHorse.setBreed(oldHorse.getBreed());
+            }
+            if (updatedHorse.getMinSpeed() == null) {
+                updatedHorse.setMinSpeed(oldHorse.getMinSpeed());
+            }
+            if (updatedHorse.getMaxSpeed() == null) {
+                updatedHorse.setMaxSpeed(oldHorse.getMaxSpeed());
+            }
+            updatedHorse.setCreated(oldHorse.getCreated());
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage(), e);
+        } catch (NotFoundException e) {
+            LOGGER.info("No horse with id " + id);
+        }
+
+        try {
+            horseValidator.validate(updatedHorse);
+            return horseDao.updateOne(id, updatedHorse);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

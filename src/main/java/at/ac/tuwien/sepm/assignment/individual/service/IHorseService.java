@@ -21,4 +21,12 @@ public interface IHorseService {
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
     Horse createOne(Horse horse) throws ServiceException;
+
+    /**
+     * @param id of the old horse
+     * @param updatedHorse the new horse
+     * @return the updated horse
+     * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     */
+    Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException;
 }
