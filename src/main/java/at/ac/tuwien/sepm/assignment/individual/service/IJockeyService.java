@@ -15,12 +15,6 @@ public interface IJockeyService {
      * @throws NotFoundException will be thrown if the jockey could not be found in the system.
      */
     Jockey findOneById(Integer id) throws ServiceException, NotFoundException;
-
-    /**
-     * @return all jockeys in the system
-     * @throws ServiceException  will be thrown if something goes wrong during data processing.
-     */
-    List<Jockey> getAll() throws ServiceException;
     
     /**
      * @param filter the filter that will be applied
