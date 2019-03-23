@@ -14,7 +14,7 @@ public interface ISimulationService {
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      * @throws NotFoundException will be thrown if the simulation could not be found in the system.
      */
-    //Simulation findOneById(Integer id) throws ServiceException, NotFoundException;
+    Simulation findOneById(Integer id) throws ServiceException, NotFoundException;
     
     /**
      * @param filter the filter that will be applied

@@ -104,11 +104,12 @@ public class SimulationDao implements ISimulationDao {
 
         if (rows == 0) throw new NotFoundException("Could not delete simulation with id: " + id);
     }
+    */
 
     @Override
     public Simulation findOneById(Integer id) throws PersistenceException, NotFoundException {
         LOGGER.info("Get simulation with id " + id);
-        String sql = "SELECT * FROM Simulation WHERE public_id=? AND NOT obsolete";
+        String sql = "SELECT * FROM Simulation WHERE id=?";
         Simulation simulation = null;
         try {
             PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
@@ -127,7 +128,6 @@ public class SimulationDao implements ISimulationDao {
             throw new NotFoundException("Could not find simulation with id " + id);
         }
     }
-    */
 
     @Override
     public List<Simulation> getAllFiltered(Simulation filter) throws PersistenceException {

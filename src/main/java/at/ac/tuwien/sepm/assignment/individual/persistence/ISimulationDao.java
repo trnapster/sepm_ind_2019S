@@ -14,7 +14,7 @@ public interface ISimulationDao {
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
      * @throws NotFoundException    will be thrown if the simulation could not be found in the database.
      */
-    //Simulation findOneById(Integer id) throws PersistenceException, NotFoundException;
+    Simulation findOneById(Integer id) throws PersistenceException, NotFoundException;
 
     /**
      * @param filter the filter that will be applied

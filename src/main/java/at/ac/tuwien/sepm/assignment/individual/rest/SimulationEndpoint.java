@@ -38,9 +38,8 @@ public class SimulationEndpoint {
         this.simulationMapper = simulationMapper;
     }
 
-    /*
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public SimulationDto getOneById(@PathVariable("id") Integer id) {
+    public SimulationResponseDto getOneById(@PathVariable("id") Integer id) {
         LOGGER.info("GET " + BASE_URL + "/" + id);
         try {
             return simulationMapper.entityToDto(simulationService.findOneById(id));
@@ -52,7 +51,6 @@ public class SimulationEndpoint {
                 "Error during reading simulation: " + e.getMessage(), e);
         }
     }
-    */
 
     @RequestMapping(method = RequestMethod.GET)
     public List<SimulationResponseDto> getAllFiltered(@RequestParam Optional<String> name) {

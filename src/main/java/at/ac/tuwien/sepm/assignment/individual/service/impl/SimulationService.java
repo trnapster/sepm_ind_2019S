@@ -29,7 +29,6 @@ public class SimulationService implements ISimulationService {
         this.simulationValidator = simulationValidator;
     }
 
-    /*
     @Override
     public Simulation findOneById(Integer id) throws ServiceException, NotFoundException {
         LOGGER.info("Get simulation with id " + id);
@@ -39,7 +38,6 @@ public class SimulationService implements ISimulationService {
             throw new ServiceException(e.getMessage(), e);
         }
     }
-    */
 
     @Override
     public List<Simulation> getAllFiltered(Simulation filter) throws ServiceException {
