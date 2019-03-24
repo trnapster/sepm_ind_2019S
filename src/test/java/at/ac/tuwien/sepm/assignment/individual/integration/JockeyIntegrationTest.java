@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -99,6 +100,33 @@ public class JockeyIntegrationTest {
             });
         List<JockeyTestDto> jockeys = response.getBody();
         assertEquals(1, jockeys.size());
+    }
+
+    @Test
+    public void givenNothing_whenFindThisJockeyById_thenStatus404() {
+        HttpStatus status = null;
+
+        try {
+            ResponseEntity<List<JockeyTestDto>> response = REST_TEMPLATE
+                .exchange(BASE_URL + port + JOCKEY_URL + "/1", HttpMethod.GET, null, new ParameterizedTypeReference<List<JockeyTestDto>>() {
+                });
+        } catch(HttpClientErrorException e) {
+            status = e.getStatusCode();
+        }
+        assertEquals(HttpStatus.NOT_FOUND, status);
+    }
+
+    @Test
+    public void givenOneJockey_whenUpdateOneJockey_thenStatus201AndGetListContainingUpdatedJockey() {
+        postJockey1();
+        HttpEntity<JockeyTestDto> request = new HttpEntity<>(JOCKEY_2);
+        ResponseEntity<JockeyTestDto> response = REST_TEMPLATE
+            .exchange(BASE_URL + port + JOCKEY_URL + "/1", HttpMethod.PUT, request, JockeyTestDto.class);
+        JockeyTestDto jockeyResponse = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals((Integer) 1, jockeyResponse.getId());
+        assertEquals(JOCKEY_2.getName(), jockeyResponse.getName());
+        assertEquals(JOCKEY_2.getSkill(), jockeyResponse.getSkill());
     }
 
     private void postJockey1() {

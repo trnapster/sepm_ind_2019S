@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -25,8 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class) @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "test")
 public class HorseIntegrationTest {
 
@@ -101,6 +101,35 @@ public class HorseIntegrationTest {
             });
         List<HorseTestDto> horses = response.getBody();
         assertEquals(1, horses.size());
+    }
+
+    @Test
+    public void givenNothing_whenFindThisHorseById_thenStatus404() {
+        HttpStatus status = null;
+
+        try {
+            ResponseEntity<List<HorseTestDto>> response = REST_TEMPLATE
+                .exchange(BASE_URL + port + HORSE_URL + "/1", HttpMethod.GET, null, new ParameterizedTypeReference<List<HorseTestDto>>() {
+                });
+        } catch(HttpClientErrorException e) {
+            status = e.getStatusCode();
+        }
+        assertEquals(HttpStatus.NOT_FOUND, status);
+    }
+
+    @Test
+    public void givenOneHorse_whenUpdateOneHorse_thenStatus201AndGetListContainingUpdatedHorse() {
+        postHorse1();
+        HttpEntity<HorseTestDto> request = new HttpEntity<>(HORSE_2);
+        ResponseEntity<HorseTestDto> response = REST_TEMPLATE
+            .exchange(BASE_URL + port + HORSE_URL + "/1", HttpMethod.PUT, request, HorseTestDto.class);
+        HorseTestDto horseResponse = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals((Integer) 1, horseResponse.getId());
+        assertEquals(HORSE_2.getName(), horseResponse.getName());
+        assertEquals(HORSE_1.getBreed(), horseResponse.getBreed());
+        assertEquals(HORSE_2.getMinSpeed(), horseResponse.getMinSpeed());
+        assertEquals(HORSE_2.getMaxSpeed(), horseResponse.getMaxSpeed());
     }
 
     private void postHorse1() {
