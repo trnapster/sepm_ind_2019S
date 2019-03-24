@@ -71,10 +71,9 @@ public class SimulationEndpoint {
         }
     }
 
-    /*
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public SimulationDto createOne(@RequestBody SimulationDto newSimulation) {
+    public SimulationResponseDto createOne(@RequestBody SimulationRequestDto newSimulation) {
         LOGGER.info("POST " + BASE_URL + "/ Body: " + newSimulation);
         try {
             return simulationMapper.entityToDto(simulationService.createOne(simulationMapper.dtoToEntity(newSimulation)));
@@ -83,32 +82,4 @@ public class SimulationEndpoint {
                 "Error during saving simulation: " + e.getMessage(), e);
         }
     }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
-    public SimulationDto updateOne(@PathVariable("id") Integer id, @RequestBody SimulationDto updatedSimulation) {
-        LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedSimulation);
-        try {
-            return simulationMapper.entityToDto(simulationService.updateOne(id, simulationMapper.dtoToEntity(updatedSimulation)));
-        } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "Error during updating of simulation: " + e.getMessage(), e);
-        }
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteOne(@PathVariable("id") Integer id) {
-        LOGGER.info("PUT " + BASE_URL + "/" + id);
-        try {
-            simulationService.deleteOne(id);
-        } catch (ServiceException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
-                "Error during deletion of simulation: " + e.getMessage(), e);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
-                "Error during deletion of simulation: " + e.getMessage(), e);
-        }
-    }
-    */
 }

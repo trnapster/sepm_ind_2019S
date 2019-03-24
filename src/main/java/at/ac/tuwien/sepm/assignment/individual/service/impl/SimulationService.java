@@ -50,13 +50,11 @@ public class SimulationService implements ISimulationService {
         }
     }
 
-    /*
     @Override
     public Simulation createOne(Simulation newSimulation) throws ServiceException {
         LocalDateTime currentTime = LocalDateTime.now();
         newSimulation.setId(null);
         newSimulation.setCreated(currentTime);
-        newSimulation.setUpdated(currentTime);
 
         try {
             simulationValidator.validate(newSimulation);
@@ -65,44 +63,4 @@ public class SimulationService implements ISimulationService {
             throw new ServiceException(e.getMessage(), e);
         }
     }
-
-    @Override
-    public Simulation updateOne(Integer id, Simulation updatedSimulation) throws ServiceException {
-        LocalDateTime currentTime = LocalDateTime.now();
-        updatedSimulation.setUpdated(currentTime);
-
-        try {
-            Simulation oldSimulation = simulationDao.findOneById(id);
-            updatedSimulation.setId(oldSimulation.getId());
-
-            if (updatedSimulation.getName() == null) {
-                updatedSimulation.setName(oldSimulation.getName());
-            }
-            if (updatedSimulation.getSkill() == null) {
-                updatedSimulation.setSkill(oldSimulation.getSkill());
-            }
-            updatedSimulation.setCreated(oldSimulation.getCreated());
-        } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage(), e);
-        } catch (NotFoundException e) {
-            LOGGER.info("No simulation with id " + id);
-        }
-
-        try {
-            simulationValidator.validate(updatedSimulation);
-            return simulationDao.updateOne(id, updatedSimulation);
-        } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void deleteOne(Integer id) throws ServiceException, NotFoundException {
-        try {
-            simulationDao.deleteOne(id);
-        } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
-    */
 }

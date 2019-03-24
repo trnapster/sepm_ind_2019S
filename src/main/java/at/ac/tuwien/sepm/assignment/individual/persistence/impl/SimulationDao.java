@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 
 @Repository
@@ -82,26 +83,17 @@ public class SimulationDao implements ISimulationDao {
             created,
             simulationParticipants);
     }
-    
-    /*
 
     private int insert(Simulation simulation) throws PersistenceException {
-        String sql = "INSERT INTO Simulation "
-            + "(public_id, name, skill, created, updated)"
-            + "values(?,?,?,?,?)";
+        String sql = "INSERT INTO Simulation"
+            + " (name, created)"
+            + " values(?,?)";
 
         try {
             PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            if (simulation.getId() != null) {
-                statement.setInt(1, simulation.getId());
-            }
-            else {
-                statement.setNull(1, Types.INTEGER);
-            }
-            statement.setString(2, simulation.getName());
-            statement.setDouble(3, simulation.getSkill());
-            statement.setTimestamp(4, Timestamp.valueOf(simulation.getCreated()));
-            statement.setTimestamp(5, Timestamp.valueOf(simulation.getUpdated()));
+
+            statement.setString(1, simulation.getName());
+            statement.setTimestamp(2, Timestamp.valueOf(simulation.getCreated()));
             int rows = statement.executeUpdate();
 
             if (rows == 0) throw new PersistenceException("No new rows generated");
@@ -109,45 +101,50 @@ public class SimulationDao implements ISimulationDao {
             ResultSet rs = statement.getGeneratedKeys();
 
             if (rs.next()) {
+                insertParticipants(rs.getInt(1), simulation);
                 return rs.getInt(1);
             }
             else {
                 throw new PersistenceException("No ID obtained");
             }
+
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
             throw new PersistenceException("Could not create simulation: " + simulation, e);
         }
     }
 
-    private Simulation getRow(int rowId) throws PersistenceException, SQLException, NotFoundException {
-        String sql = "SELECT * FROM Simulation WHERE id=?";
-        Simulation simulation = null;
+    private void insertParticipants(int simulationId, Simulation simulation) throws PersistenceException {
+        String sql = "INSERT INTO Simulation_participant"
+            + " (rank, simulation_id, horse_id, jockey_id, avg_speed, horse_speed, skill, luck_factor)"
+            + " values(?, ?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
-        statement.setInt(1, rowId);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            simulation = dbResultToSimulationDto(result);
-        }
+        try {
+            for (SimulationParticipant participant : simulation.getSimulationParticipants()) {
+                PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
 
-        if (simulation != null) {
-            return simulation;
-        } else {
-            throw new NotFoundException("Could not find simulation with id " + rowId);
+                statement.setInt(1, 1);
+                //statement.setInt(1, participant.getRank());
+                statement.setInt(2, simulationId);
+                statement.setInt(3, participant.getHorse().getId());
+                statement.setInt(4, participant.getJockey().getId());
+                //statement.setBigDecimal(4, participant.getAvgSpeed());
+                //statement.setBigDecimal(5, participant.getHorseSpeed());
+                //statement.setBigDecimal(6, participant.getSkill());
+                statement.setBigDecimal(5, BigDecimal.valueOf(10.0));
+                statement.setBigDecimal(6, BigDecimal.valueOf(20.0));
+                statement.setBigDecimal(7, BigDecimal.valueOf(30.0));
+                statement.setDouble(8, participant.getLuckFactor());
+                int rows = statement.executeUpdate();
+
+                if (rows == 0) throw new PersistenceException("No new rows generated");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
+            throw new PersistenceException("Could not create simulation: " + simulation, e);
         }
     }
-
-    private void obsolete(int id) throws PersistenceException, SQLException, NotFoundException {
-        String sql = "UPDATE Simulation SET obsolete = TRUE WHERE public_id = ? AND NOT obsolete";
-
-        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
-        statement.setInt(1, id);
-        int rows = statement.executeUpdate();
-
-        if (rows == 0) throw new NotFoundException("Could not delete simulation with id: " + id);
-    }
-    */
 
     @Override
     public Simulation findOneById(Integer id) throws PersistenceException, NotFoundException {
@@ -212,39 +209,14 @@ public class SimulationDao implements ISimulationDao {
         }
     }
 
-    /*
     @Override
     public Simulation createOne(Simulation simulation) throws PersistenceException {
         LOGGER.info("Create simulation: " + simulation);
         try {
-            return getRow(insert(simulation));
-        } catch (SQLException | NotFoundException e) {
+            return findOneById(insert(simulation));
+        } catch (NotFoundException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
             throw new PersistenceException("Could not create simulation: " + simulation, e);
         }
     }
-
-    @Override
-    public Simulation updateOne(Integer id, Simulation simulation) throws PersistenceException {
-        LOGGER.info("Update simulation: " + simulation);
-        try {
-            obsolete(id);
-            return getRow(insert(simulation));
-        } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL update statement for updating simulation with id: " + id, e);
-            throw new PersistenceException("Could not update simulation with id" + id, e);
-        }
-    }
-
-    @Override
-    public void deleteOne(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Delete simulation with id: " + id);
-        try {
-            obsolete(id);
-        } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL delete statement for deleting simulation with id : " + id, e);
-            throw new PersistenceException("Could not delete simulation with id" + id, e);
-        }
-    }
-    */
 }

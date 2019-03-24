@@ -15,7 +15,7 @@ VALUES ('Sim1', CURRENT_TIMESTAMP()),
   ('Sim2', CURRENT_TIMESTAMP()),
   ('Sim3', CURRENT_TIMESTAMP());
 
-INSERT INTO simulation_participant (simulation_id, rank, horse_id, jockey_id, avg_speed, horse_speed, skill, luck_factor)
-VALUES (1, 2, 1, 2, 50.0, 55.0, 20.0, 1.0),
+INSERT INTO simulation_participant (rank, simulation_id, horse_id, jockey_id, avg_speed, horse_speed, skill, luck_factor)
+VALUES (2, 2, 1, 2, 50.0, 55.0, 20.0, 1.0),
   (1, 1, 2, 1, 40.0, 42.0, 24.0, 1.1),
-  (2, 1, 3, 3, 60, 50, -1.0, 0.9);
+  (1, 1, 3, 3, 60, 50, -1.0, 0.9);
