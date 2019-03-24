@@ -64,6 +64,7 @@ public class JockeyDao implements IJockeyDao {
         ResultSet rs = statement.getGeneratedKeys();
 
         if (rs.next()) {
+            LOGGER.debug("Jockey inserted into database with ID: " + rs.getInt(1));
             return rs.getInt(1);
         }
         else {
@@ -83,8 +84,10 @@ public class JockeyDao implements IJockeyDao {
         }
 
         if (jockey != null) {
+            LOGGER.debug("Jockey read from database: " + jockey);
             return jockey;
         } else {
+            LOGGER.warn("Could not find jockey with row_id: " + rowId);
             throw new NotFoundException("Could not find jockey with ID: " + rowId);
         }
     }
@@ -96,12 +99,15 @@ public class JockeyDao implements IJockeyDao {
         statement.setInt(1, id);
         int rows = statement.executeUpdate();
 
-        if (rows == 0) throw new NotFoundException("Could not delete jockey with ID: " + id);
+        if (rows == 0) {
+            LOGGER.warn("Could not find jockey with ID: " + id);
+            throw new NotFoundException("Could not find jockey with ID: " + id);
+        }
     }
 
     @Override
     public Jockey findOneById(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Get jockey with id " + id);
+        LOGGER.debug("Reading jockey with public_id: " + id + " from database");
         String sql = "SELECT * FROM Jockey WHERE public_id=? AND NOT obsolete";
         Jockey jockey = null;
         try {
@@ -112,19 +118,21 @@ public class JockeyDao implements IJockeyDao {
                 jockey = dbResultToJockeyDto(result);
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading jockey with id " + id, e);
+            LOGGER.error("Problem while executing SQL select statement for reading jockey with public_id: " + id, e);
             throw new PersistenceException("Could not read jockeys with ID: " + id, e);
         }
         if (jockey != null) {
+            LOGGER.info("Read jockey from database:" + jockey);
             return jockey;
         } else {
+            LOGGER.warn("Could not find jockey with public_id: " + id);
             throw new NotFoundException("Could not find jockey with ID: " + id);
         }
     }
 
     @Override
     public List<Jockey> getAllFiltered(Jockey filter) throws PersistenceException {
-        LOGGER.info("Get all jockeys with filter: " + filter);
+        LOGGER.debug("Reading all jockeys with filter: " + filter + " from database");
         String sql = "SELECT * FROM Jockey WHERE NOT obsolete";
         int parameterCount = 0;
         int nameIndex = 0; 
@@ -158,9 +166,10 @@ public class JockeyDao implements IJockeyDao {
                 Jockey jockey = dbResultToJockeyDto(result);
                 jockeys.add(jockey);
             }
+            LOGGER.info("Read jockeys: " + jockeys + " from database");
             return jockeys;
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading jockey with id ", e);
+            LOGGER.error("Problem while executing SQL select statement for reading jockeys with filter: " + filter, e);
             throw new PersistenceException("Could not read jockeys", e);
         }
     }
@@ -177,23 +186,26 @@ public class JockeyDao implements IJockeyDao {
     }
 
     @Override
-    public Jockey updateOne(Jockey jockey) throws PersistenceException {
-        LOGGER.info("Update jockey: " + jockey);
+    public Jockey updateOne(Jockey jockey) throws PersistenceException, NotFoundException {
+        LOGGER.debug("Updating jockey: " + jockey + " in database");
         try {
             obsolete(jockey.getId());
-            return getRow(insert(jockey));
-        } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL update statement for updating jockey with id: " + jockey.getId(), e);
+            Jockey newJockey = getRow(insert(jockey));
+            LOGGER.info("Updated jockey: " + newJockey + " in database");
+            return newJockey;
+        } catch (SQLException e) {
+            LOGGER.error("Problem while executing SQL for updating jockey with id: " + jockey.getId(), e);
             throw new PersistenceException("Could not update jockey with ID: " + jockey.getId(), e);
         }
     }
 
     @Override
     public void deleteOne(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Delete jockey with id: " + id);
+        LOGGER.debug("Deleting jockey with ID: " + id + " from database");
         try {
             obsolete(id);
-        } catch (SQLException | NotFoundException e) {
+            LOGGER.info("Deleted jockey with ID: " + id + " from database");
+        } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL delete statement for deleting jockey with id : " + id, e);
             throw new PersistenceException("Could not delete jockey with ID: " + id, e);
         }

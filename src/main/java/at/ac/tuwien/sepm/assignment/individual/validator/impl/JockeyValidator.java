@@ -23,12 +23,14 @@ public class JockeyValidator implements IJockeyValidator {
 
     private void validateName(Jockey jockey) throws ServiceException {
         if (jockey.getName() == null || jockey.getName().isEmpty()) {
+            LOGGER.warn("Validation error: Name of jockey must be set: " + jockey);
             throw new ServiceException("Name must be set");
         }
     }
 
     private void validateSkill(Jockey jockey) throws ServiceException {
         if (jockey.getSkill() == null) {
+            LOGGER.warn("Validation error: Skill of jockey must be set: " + jockey);
             throw new ServiceException("Skill must be set");
         }
     }

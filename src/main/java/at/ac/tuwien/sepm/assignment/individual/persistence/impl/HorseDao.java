@@ -103,7 +103,10 @@ public class HorseDao implements IHorseDao {
         statement.setInt(1, id);
         int rows = statement.executeUpdate();
 
-        if (rows == 0) throw new NotFoundException("Could not delete Horse with ID: " + id);
+        if (rows == 0) {
+            LOGGER.warn("Could not find horse with ID: " + id);
+            throw new NotFoundException("Could not find Horse with ID: " + id);
+        }
 
         LOGGER.debug("Horse with ID: " + id + "set to obsolete in database");
     }
@@ -129,7 +132,7 @@ public class HorseDao implements IHorseDao {
             return horse;
         } else {
             LOGGER.warn("Could not find horse with public_id: " + id);
-            throw new NotFoundException("Could not find horse with id " + id);
+            throw new NotFoundException("Could not find horse with ID: " + id);
         }
     }
 

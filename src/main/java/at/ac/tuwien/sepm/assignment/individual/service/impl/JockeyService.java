@@ -31,7 +31,7 @@ public class JockeyService implements IJockeyService {
 
     @Override
     public Jockey findOneById(Integer id) throws ServiceException, NotFoundException {
-        LOGGER.info("Get jockey with id " + id);
+        LOGGER.info("Read jockey with ID: " + id);
         try {
             return jockeyDao.findOneById(id);
         } catch (PersistenceException e) {
@@ -41,7 +41,7 @@ public class JockeyService implements IJockeyService {
 
     @Override
     public List<Jockey> getAllFiltered(Jockey filter) throws ServiceException {
-        LOGGER.info("Get all jockeys with filter: " + filter);
+        LOGGER.info("Read all jockey with filter: " + filter);
 
         try {
             return jockeyDao.getAllFiltered(filter);
@@ -52,6 +52,7 @@ public class JockeyService implements IJockeyService {
 
     @Override
     public Jockey createOne(Jockey newJockey) throws ServiceException {
+        LOGGER.info("Create new jockey: " + newJockey);
         LocalDateTime currentTime = LocalDateTime.now();
         newJockey.setId(null);
         newJockey.setCreated(currentTime);
@@ -67,6 +68,7 @@ public class JockeyService implements IJockeyService {
 
     @Override
     public Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException, NotFoundException {
+        LOGGER.info("Update jockey with ID: " + id + "with jockey: " + updatedJockey);
         LocalDateTime currentTime = LocalDateTime.now();
         updatedJockey.setUpdated(currentTime);
 
@@ -91,6 +93,7 @@ public class JockeyService implements IJockeyService {
 
     @Override
     public void deleteOne(Integer id) throws ServiceException, NotFoundException {
+        LOGGER.info("Delete jockey with ID: " + id);
         try {
             jockeyDao.deleteOne(id);
         } catch (PersistenceException e) {

@@ -40,6 +40,7 @@ public class JockeyEndpoint {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JockeyDto getOneById(@PathVariable("id") Integer id) {
         LOGGER.info("GET " + BASE_URL + "/" + id);
+        LOGGER.debug("Read jockey with ID: " + id);
         try {
             return jockeyMapper.entityToDto(jockeyService.findOneById(id));
         } catch (ServiceException e) {
@@ -67,6 +68,8 @@ public class JockeyEndpoint {
             null, 
             null);
 
+        LOGGER.debug("Read all jockeys with filter: " + filter);
+
         try {
             return jockeyMapper.entityToDto(jockeyService.getAllFiltered(jockeyMapper.dtoToEntity(filter)));
         } catch (ServiceException e) {
@@ -78,7 +81,8 @@ public class JockeyEndpoint {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public JockeyDto createOne(@RequestBody JockeyDto newJockey) {
-        LOGGER.info("POST " + BASE_URL + "/ Body: " + newJockey);
+        LOGGER.info("POST " + BASE_URL + "/");
+        LOGGER.debug("Create new jockey: " + newJockey);
         try {
             return jockeyMapper.entityToDto(jockeyService.createOne(jockeyMapper.dtoToEntity(newJockey)));
         } catch (ServiceException e) {
@@ -90,7 +94,8 @@ public class JockeyEndpoint {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public JockeyDto updateOne(@PathVariable("id") Integer id, @RequestBody JockeyDto updatedJockey) {
-        LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedJockey);
+        LOGGER.info("PUT " + BASE_URL + "/" + id);
+        LOGGER.debug("Update jockey with ID: " + "with jockey: " + updatedJockey);
         try {
             return jockeyMapper.entityToDto(jockeyService.updateOne(id, jockeyMapper.dtoToEntity(updatedJockey)));
         } catch (ServiceException e) {
@@ -106,6 +111,7 @@ public class JockeyEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public void deleteOne(@PathVariable("id") Integer id) {
         LOGGER.info("PUT " + BASE_URL + "/" + id);
+        LOGGER.debug("Delete jockey with ID: " + id);
         try {
             jockeyService.deleteOne(id);
         } catch (ServiceException e) {
