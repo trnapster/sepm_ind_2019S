@@ -68,6 +68,7 @@ public class HorseDao implements IHorseDao {
         ResultSet rs = statement.getGeneratedKeys();
 
         if (rs.next()) {
+            LOGGER.debug("Jockey inserted into database with ID: " + rs.getInt(1));
             return rs.getInt(1);
         }
         else {
@@ -87,8 +88,10 @@ public class HorseDao implements IHorseDao {
         }
 
         if (horse != null) {
+            LOGGER.debug("Horse read from database: " + horse);
             return horse;
         } else {
+            LOGGER.warn("Could not find horse with row_id: " + rowId);
             throw new NotFoundException("Could not find horse with ID: " + rowId);
         }
     }
@@ -101,11 +104,13 @@ public class HorseDao implements IHorseDao {
         int rows = statement.executeUpdate();
 
         if (rows == 0) throw new NotFoundException("Could not delete Horse with ID: " + id);
+
+        LOGGER.debug("Horse with ID: " + id + "set to obsolete in database");
     }
 
     @Override
     public Horse findOneById(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Get horse with id " + id);
+        LOGGER.debug("Reading horse with public_id: " + id + " from database");
         String sql = "SELECT * FROM Horse WHERE public_id=? AND NOT obsolete";
         Horse horse = null;
         try {
@@ -116,19 +121,21 @@ public class HorseDao implements IHorseDao {
                 horse = dbResultToHorseDto(result);
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading horse with id " + id, e);
+            LOGGER.error("Problem while executing SQL select statement for reading horse with public_id: " + id, e);
             throw new PersistenceException("Could not read horse with ID: " + id, e);
         }
         if (horse != null) {
+            LOGGER.info("Read horse from database:" + horse);
             return horse;
         } else {
+            LOGGER.warn("Could not find horse with public_id: " + id);
             throw new NotFoundException("Could not find horse with id " + id);
         }
     }
 
     @Override
     public List<Horse> getAllFiltered(Horse filter) throws PersistenceException {
-        LOGGER.info("Get all horses with filter: " + filter);
+        LOGGER.debug("Reading all horses with filter: " + filter + " from database");
         String sql = "SELECT * FROM Horse WHERE NOT obsolete";
         int parameterCount = 0;
         int nameIndex = 0; 
@@ -180,18 +187,21 @@ public class HorseDao implements IHorseDao {
                 Horse horse = dbResultToHorseDto(result);
                 horses.add(horse);
             }
+            LOGGER.info("Read horses: " + horses + " from database");
             return horses;
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading horse with id ", e);
+            LOGGER.error("Problem while executing SQL select statement for reading horses with filter: " + filter, e);
             throw new PersistenceException("Could not read horses", e);
         }
     }
 
     @Override
     public Horse createOne(Horse horse) throws PersistenceException {
-        LOGGER.info("Create horse: " + horse);
+        LOGGER.debug("Saving horse: " + horse + " in database");
         try {
-            return getRow(insert(horse));
+            Horse newHorse =  getRow(insert(horse));
+            LOGGER.info("Saved horse: " + newHorse + " in database");
+            return newHorse;
         } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
             throw new PersistenceException("Could not create horse", e);
@@ -200,21 +210,24 @@ public class HorseDao implements IHorseDao {
 
     @Override
     public Horse updateOne(Horse horse) throws PersistenceException, NotFoundException {
-        LOGGER.info("Update horse: " + horse);
+        LOGGER.debug("Updating horse: " + horse + " in database");
         try {
             obsolete(horse.getId());
-            return getRow(insert(horse));
+            Horse newHorse = getRow(insert(horse));
+            LOGGER.info("Updated horse: " + newHorse + " in database");
+            return newHorse;
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL update statement for updating horse with id: " + horse.getId(), e);
+            LOGGER.error("Problem while executing SQL for updating horse with id: " + horse.getId(), e);
             throw new PersistenceException("Could not update horse with ID: " + horse.getId(), e);
         }
     }
 
     @Override
     public void deleteOne(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Delete horse with id: " + id);
+        LOGGER.debug("Deleting horse with ID: " + id + " from database");
         try {
             obsolete(id);
+            LOGGER.info("Deleted horse with ID: " + id + " from database");
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL delete statement for deleting horse with id : " + id, e);
             throw new PersistenceException("Could not delete horse with ID: " + id, e);

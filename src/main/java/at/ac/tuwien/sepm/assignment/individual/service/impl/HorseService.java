@@ -31,7 +31,7 @@ public class HorseService implements IHorseService {
 
     @Override
     public Horse findOneById(Integer id) throws ServiceException, NotFoundException {
-        LOGGER.info("Get horse with id " + id);
+        LOGGER.info("Read horse with ID: " + id);
         try {
             return horseDao.findOneById(id);
         } catch (PersistenceException e) {
@@ -41,7 +41,7 @@ public class HorseService implements IHorseService {
 
     @Override
     public List<Horse> getAllFiltered(Horse filter) throws ServiceException {
-        LOGGER.info("Get all horses with filter: " + filter);
+        LOGGER.info("Read all horses with filter: " + filter);
 
         try {
             return horseDao.getAllFiltered(filter);
@@ -52,6 +52,7 @@ public class HorseService implements IHorseService {
 
     @Override
     public Horse createOne(Horse newHorse) throws ServiceException {
+        LOGGER.info("Create new horse: " + newHorse);
         LocalDateTime currentTime = LocalDateTime.now();
         newHorse.setId(null);
         newHorse.setCreated(currentTime);
@@ -67,6 +68,7 @@ public class HorseService implements IHorseService {
 
     @Override
     public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException, NotFoundException {
+        LOGGER.info("Update horse with ID: " + id + "with horse: " + updatedHorse);
         LocalDateTime currentTime = LocalDateTime.now();
         updatedHorse.setUpdated(currentTime);
 
@@ -97,6 +99,7 @@ public class HorseService implements IHorseService {
 
     @Override
     public void deleteOne(Integer id) throws ServiceException, NotFoundException {
+        LOGGER.info("Delete horse with ID: " + id);
         try {
             horseDao.deleteOne(id);
         } catch (PersistenceException e) {

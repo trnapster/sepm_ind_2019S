@@ -26,6 +26,7 @@ public class HorseValidator implements IHorseValidator {
 
     private void validateName(Horse horse) throws ServiceException {
         if (horse.getName() == null || horse.getName().isEmpty()) {
+            LOGGER.warn("Validation error: Name of horse must be set: " + horse);
             throw new ServiceException("Name must be set");
         }
     }
@@ -33,18 +34,23 @@ public class HorseValidator implements IHorseValidator {
     private void validateSpeed(Horse horse) throws ServiceException {
         String message = null;
         if (horse.getMinSpeed() == null) {
+            LOGGER.warn("Validation error: Minimum Speed of horse must be set: " + horse);
             throw new ServiceException("Minimum Speed must be set");
         }
         if (horse.getMaxSpeed() == null) {
+            LOGGER.warn("Validation error: Maximum Speed of horse must be set: " + horse);
             throw new ServiceException("Maximum Speed must be set");
         }
         if (horse.getMinSpeed() < MINSPEED || horse.getMinSpeed() > MAXSPEED) {
+            LOGGER.warn("Validation error: Minimum Speed of horse has to be between " + MINSPEED + " and " + MAXSPEED+ " " + horse);
             throw new ServiceException("Minimum Speed has to be between " + MINSPEED + " and " + MAXSPEED);
         }
         if (horse.getMaxSpeed() < MINSPEED || horse.getMaxSpeed() > MAXSPEED) {
+            LOGGER.warn("Validation error: Maximum Speed of horse has to be between " + MINSPEED + " and " + MAXSPEED+ " " + horse);
             throw new ServiceException("Minimum Speed has to be between " + MINSPEED + " and " + MAXSPEED);
         }
         if (horse.getMinSpeed() > horse.getMaxSpeed()) {
+            LOGGER.warn("Validation error: Minimum Speed of horse has to be smaller than Maximum Speed " + horse);
             throw new ServiceException("Minimum Speed has to be smaller than Maximum Speed");
         }
     }

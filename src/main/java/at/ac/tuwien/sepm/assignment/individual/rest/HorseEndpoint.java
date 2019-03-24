@@ -40,6 +40,7 @@ public class HorseEndpoint {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public HorseDto getOneById(@PathVariable("id") Integer id) {
         LOGGER.info("GET " + BASE_URL + "/" + id);
+        LOGGER.debug("Read horse with ID: " + id);
         try {
             return horseMapper.entityToDto(horseService.findOneById(id));
         } catch (ServiceException e) {
@@ -73,6 +74,8 @@ public class HorseEndpoint {
             null, 
             null);
 
+        LOGGER.debug("Read all horses with filter: " + filter);
+
         try {
             return horseMapper.entityToDto(horseService.getAllFiltered(horseMapper.dtoToEntity(filter)));
         } catch (ServiceException e) {
@@ -84,7 +87,8 @@ public class HorseEndpoint {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public HorseDto createOne(@RequestBody HorseDto newHorse) {
-        LOGGER.info("POST " + BASE_URL + "/ Body: " + newHorse);
+        LOGGER.info("POST " + BASE_URL + "/");
+        LOGGER.debug("Create new horse: " + newHorse);
         try {
             return horseMapper.entityToDto(horseService.createOne(horseMapper.dtoToEntity(newHorse)));
         } catch (ServiceException e) {
@@ -96,7 +100,8 @@ public class HorseEndpoint {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public HorseDto updateOne(@PathVariable("id") Integer id, @RequestBody HorseDto updatedHorse) {
-        LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedHorse);
+        LOGGER.info("PUT " + BASE_URL + "/" + id);
+        LOGGER.debug("Update horse with ID: " + "with horse: " + updatedHorse);
         try {
             return horseMapper.entityToDto(horseService.updateOne(id, horseMapper.dtoToEntity(updatedHorse)));
         } catch (ServiceException e) {
@@ -112,6 +117,7 @@ public class HorseEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public void deleteOne(@PathVariable("id") Integer id) {
         LOGGER.info("PUT " + BASE_URL + "/" + id);
+        LOGGER.debug("Delete horse with ID: " + id);
         try {
             horseService.deleteOne(id);
         } catch (ServiceException e) {
