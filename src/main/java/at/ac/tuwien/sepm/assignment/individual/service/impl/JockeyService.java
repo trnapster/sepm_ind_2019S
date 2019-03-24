@@ -72,7 +72,7 @@ public class JockeyService implements IJockeyService {
 
         try {
             Jockey oldJockey = jockeyDao.findOneById(id);
-            updatedJockey.setId(oldJockey.getId());
+            updatedJockey.setId(id);
 
             if (updatedJockey.getName() == null) {
                 updatedJockey.setName(oldJockey.getName());
@@ -89,7 +89,7 @@ public class JockeyService implements IJockeyService {
 
         try {
             jockeyValidator.validate(updatedJockey);
-            return jockeyDao.updateOne(id, updatedJockey);
+            return jockeyDao.updateOne(updatedJockey);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

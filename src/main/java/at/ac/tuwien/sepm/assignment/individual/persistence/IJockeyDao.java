@@ -31,12 +31,11 @@ public interface IJockeyDao {
     Jockey createOne(Jockey jockey) throws PersistenceException;
 
     /**
-     * @param id of the jockey that will be updated
      * @param jockey the new jockey
      * @return the jockey that has been updated
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
      */
-    Jockey updateOne(Integer id, Jockey jockey) throws PersistenceException;
+    Jockey updateOne(Jockey jockey) throws PersistenceException;
 
     /**
      * @param id of the jockey that will be deleted

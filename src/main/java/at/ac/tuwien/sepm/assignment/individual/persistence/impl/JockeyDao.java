@@ -182,14 +182,14 @@ public class JockeyDao implements IJockeyDao {
     }
 
     @Override
-    public Jockey updateOne(Integer id, Jockey jockey) throws PersistenceException {
+    public Jockey updateOne(Jockey jockey) throws PersistenceException {
         LOGGER.info("Update jockey: " + jockey);
         try {
-            obsolete(id);
+            obsolete(jockey.getId());
             return getRow(insert(jockey));
         } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL update statement for updating jockey with id: " + id, e);
-            throw new PersistenceException("Could not update jockey with id" + id, e);
+            LOGGER.error("Problem while executing SQL update statement for updating jockey with id: " + jockey.getId(), e);
+            throw new PersistenceException("Could not update jockey with id" + jockey.getId(), e);
         }
     }
 
