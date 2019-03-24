@@ -1,11 +1,18 @@
 package at.ac.tuwien.sepm.assignment.individual.validator.impl;
 
+import at.ac.tuwien.sepm.assignment.individual.entity.Jockey;
+import at.ac.tuwien.sepm.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepm.assignment.individual.entity.Simulation;
+import at.ac.tuwien.sepm.assignment.individual.entity.SimulationParticipant;
 import at.ac.tuwien.sepm.assignment.individual.validator.ISimulationValidator;
 import at.ac.tuwien.sepm.assignment.individual.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Component
 public class SimulationValidator implements ISimulationValidator {
@@ -17,5 +24,23 @@ public class SimulationValidator implements ISimulationValidator {
 
     @Override
     public void validate(Simulation simulation) throws ServiceException {
+        validateHorses(simulation.getSimulationParticipants());
+        validateJockeys(simulation.getSimulationParticipants());
+    }
+    
+    private void validateHorses(List<SimulationParticipant> participants) throws ServiceException {
+        Set<Horse> horses = new HashSet<Horse>();
+        for(SimulationParticipant participant : participants) {
+            boolean success = horses.add(participant.getHorse());
+            if (!success) throw new ServiceException("Horses can't be in the same Simulation twice");
+        }
+    }
+
+    private void validateJockeys(List<SimulationParticipant> participants) throws ServiceException {
+        Set<Jockey> jockeys = new HashSet<Jockey>();
+        for(SimulationParticipant participant : participants) {
+            boolean success = jockeys.add(participant.getJockey());
+            if (!success) throw new ServiceException("Jockey can't be in the same Simulation twice");
+        }
     }
 }
