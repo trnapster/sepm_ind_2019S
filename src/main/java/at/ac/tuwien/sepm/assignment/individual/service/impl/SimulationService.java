@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -85,6 +86,15 @@ public class SimulationService implements ISimulationService {
                 participant.setHorseSpeed(horseSpeed);
                 participant.setSkill(skill);
                 participant.setAvgSpeed(avgSpeed);
+            }
+
+            List<SimulationParticipant> rankedParticipants = newSimulation.getSimulationParticipants()
+                .stream()
+                .sorted((p1, p2) -> p2.getAvgSpeed().compareTo(p1.getAvgSpeed()))
+                .collect(Collectors.toList());
+
+            for (int i = 0; i < rankedParticipants.size(); i++) {
+                rankedParticipants.get(i).setRank(i + 1);
             }
 
             simulationValidator.validate(newSimulation);

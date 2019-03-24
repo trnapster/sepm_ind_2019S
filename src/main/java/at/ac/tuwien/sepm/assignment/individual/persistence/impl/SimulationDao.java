@@ -122,8 +122,7 @@ public class SimulationDao implements ISimulationDao {
             for (SimulationParticipant participant : simulation.getSimulationParticipants()) {
                 PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
 
-                statement.setInt(1, 1);
-                //statement.setInt(1, participant.getRank());
+                statement.setInt(1, participant.getRank());
                 statement.setInt(2, simulationId);
                 statement.setInt(3, participant.getHorse().getId());
                 statement.setInt(4, participant.getJockey().getId());
