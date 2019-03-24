@@ -15,14 +15,14 @@ public class SimulationParticipant {
     private BigDecimal avgSpeed;
     private BigDecimal horseSpeed;
     private BigDecimal skill;
-    private Double luckFactor;
+    private BigDecimal luckFactor;
 
     public SimulationParticipant() {
     }
 
     public SimulationParticipant(Integer id, Integer rank, Horse horse, 
             Jockey jockey, BigDecimal avgSpeed, BigDecimal horseSpeed, 
-            BigDecimal skill, Double luckFactor) {
+            BigDecimal skill, BigDecimal luckFactor) {
         this.id = id;
         this.rank = rank;
         this.horse = horse;
@@ -89,11 +89,11 @@ public class SimulationParticipant {
         this.skill = skill;
     }
 
-    public Double getLuckFactor() {
+    public BigDecimal getLuckFactor() {
         return luckFactor;
     }
 
-    public void setLuckFactor(Double luckFactor) {
+    public void setLuckFactor(BigDecimal luckFactor) {
         this.luckFactor = luckFactor;
     }
 

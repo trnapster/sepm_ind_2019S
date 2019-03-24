@@ -12,14 +12,14 @@ public class HorseJockeyCombinationDto {
     private BigDecimal avgSpeed;
     private BigDecimal horseSpeed;
     private BigDecimal skill;
-    private Double luckFactor;
+    private BigDecimal luckFactor;
 
     public HorseJockeyCombinationDto() {
     }
 
     public HorseJockeyCombinationDto(Integer id, Integer rank, String horseName, 
             String jockeyName, BigDecimal avgSpeed, BigDecimal horseSpeed,
-            BigDecimal skill, Double luckFactor) {
+            BigDecimal skill, BigDecimal luckFactor) {
         this.id = id;
         this.rank = rank;
         this.horseName = horseName;
@@ -86,11 +86,11 @@ public class HorseJockeyCombinationDto {
         this.skill = skill;
     }
 
-    public Double getLuckFactor() {
+    public BigDecimal getLuckFactor() {
         return luckFactor;
     }
 
-    public void setLuckFactor(Double luckFactor) {
+    public void setLuckFactor(BigDecimal luckFactor) {
         this.luckFactor = luckFactor;
     }
 

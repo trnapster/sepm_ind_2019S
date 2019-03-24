@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 public class SimulationParticipantDto {
     private Integer horseId;
     private Integer jockeyId;
-    private Double luckFactor;
+    private BigDecimal luckFactor;
 
     public SimulationParticipantDto() {
     }
 
-    public SimulationParticipantDto(Integer horseId, Integer jockeyId, Double luckFactor) {
+    public SimulationParticipantDto(Integer horseId, Integer jockeyId, BigDecimal luckFactor) {
         this.horseId = horseId;
         this.jockeyId = jockeyId;
         this.luckFactor = luckFactor;
@@ -34,11 +34,11 @@ public class SimulationParticipantDto {
         this.jockeyId = jockeyId;
     }
 
-    public Double getLuckFactor() {
+    public BigDecimal getLuckFactor() {
         return luckFactor;
     }
 
-    public void setLuckFactor(Double luckFactor) {
+    public void setLuckFactor(BigDecimal luckFactor) {
         this.luckFactor = luckFactor;
     }
 

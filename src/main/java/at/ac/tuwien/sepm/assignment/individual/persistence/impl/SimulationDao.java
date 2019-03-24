@@ -71,7 +71,7 @@ public class SimulationDao implements ISimulationDao {
                         result.getBigDecimal("avg_speed"),
                         result.getBigDecimal("horse_speed"),
                         result.getBigDecimal("skill"),
-                        result.getDouble("luck_factor"));
+                        result.getBigDecimal("luck_factor"));
                     simulationParticipants.add(simulationParticipant);
                 }
             } while(result.next());
@@ -134,7 +134,7 @@ public class SimulationDao implements ISimulationDao {
                 statement.setBigDecimal(5, BigDecimal.valueOf(10.0));
                 statement.setBigDecimal(6, BigDecimal.valueOf(20.0));
                 statement.setBigDecimal(7, BigDecimal.valueOf(30.0));
-                statement.setDouble(8, participant.getLuckFactor());
+                statement.setBigDecimal(8, participant.getLuckFactor());
                 int rows = statement.executeUpdate();
 
                 if (rows == 0) throw new PersistenceException("No new rows generated");

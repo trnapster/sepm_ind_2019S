@@ -13,11 +13,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.math.BigDecimal;
 
 @Component
 public class SimulationValidator implements ISimulationValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulationValidator.class);
+
+    private static final BigDecimal MINLUCKFACTOR = BigDecimal.valueOf(0.95);
+    private static final BigDecimal MAXLUCKFACTOR = BigDecimal.valueOf(1.05);
 
     public SimulationValidator() {
     }
@@ -26,6 +30,7 @@ public class SimulationValidator implements ISimulationValidator {
     public void validate(Simulation simulation) throws ServiceException {
         validateHorses(simulation.getSimulationParticipants());
         validateJockeys(simulation.getSimulationParticipants());
+        validateLuckFactor(simulation.getSimulationParticipants());
     }
     
     private void validateHorses(List<SimulationParticipant> participants) throws ServiceException {
@@ -41,6 +46,16 @@ public class SimulationValidator implements ISimulationValidator {
         for(SimulationParticipant participant : participants) {
             boolean success = jockeys.add(participant.getJockey());
             if (!success) throw new ServiceException("Jockey can't be in the same Simulation twice");
+        }
+    }
+
+    private void validateLuckFactor(List<SimulationParticipant> participants) throws ServiceException {
+        for(SimulationParticipant participant : participants) {
+            if (participant.getLuckFactor().compareTo(MINLUCKFACTOR) < 0
+                    || participant.getLuckFactor().compareTo(MAXLUCKFACTOR) > 0) {
+                throw new ServiceException("value of luckFactor has to be between "
+                    + MINLUCKFACTOR + " and " + MAXLUCKFACTOR);
+            }
         }
     }
 }
