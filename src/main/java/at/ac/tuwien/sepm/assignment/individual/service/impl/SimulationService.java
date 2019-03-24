@@ -44,7 +44,7 @@ public class SimulationService implements ISimulationService {
 
     @Override
     public Simulation findOneById(Integer id) throws ServiceException, NotFoundException {
-        LOGGER.info("Get simulation with id " + id);
+        LOGGER.info("Read simulation with ID: " + id);
         try {
             return simulationDao.findOneById(id);
         } catch (PersistenceException e) {
@@ -54,7 +54,7 @@ public class SimulationService implements ISimulationService {
 
     @Override
     public List<Simulation> getAllFiltered(Simulation filter) throws ServiceException {
-        LOGGER.info("Get all simulations with filter: " + filter);
+        LOGGER.info("Read all simulations with filter: " + filter);
 
         try {
             return simulationDao.getAllFiltered(filter);
@@ -65,6 +65,7 @@ public class SimulationService implements ISimulationService {
 
     @Override
     public Simulation createOne(Simulation newSimulation) throws ServiceException {
+        LOGGER.info("Create new simulation: " + newSimulation);
         LocalDateTime currentTime = LocalDateTime.now();
         newSimulation.setId(null);
         newSimulation.setCreated(currentTime);

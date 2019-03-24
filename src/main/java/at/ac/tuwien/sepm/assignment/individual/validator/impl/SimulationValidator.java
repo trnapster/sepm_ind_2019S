@@ -27,31 +27,42 @@ public class SimulationValidator implements ISimulationValidator {
 
     @Override
     public void validate(Simulation simulation) throws ServiceException {
-        validateHorses(simulation.getSimulationParticipants());
-        validateJockeys(simulation.getSimulationParticipants());
-        validateLuckFactor(simulation.getSimulationParticipants());
+        validateHorses(simulation);
+        validateJockeys(simulation);
+        validateLuckFactor(simulation);
     }
     
-    private void validateHorses(List<SimulationParticipant> participants) throws ServiceException {
+    private void validateHorses(Simulation simulation) throws ServiceException {
+        List<SimulationParticipant> participants = simulation.getSimulationParticipants();
         Set<Horse> horses = new HashSet<Horse>();
         for(SimulationParticipant participant : participants) {
             boolean success = horses.add(participant.getHorse());
-            if (!success) throw new ServiceException("Horses can't be in the same Simulation twice");
+            if (!success) {
+                LOGGER.warn("Validation error: Horses can't be in the same simulation twice " + simulation);
+                throw new ServiceException("Horses can't be in the same Simulation twice");
+            }
         }
     }
 
-    private void validateJockeys(List<SimulationParticipant> participants) throws ServiceException {
+    private void validateJockeys(Simulation simulation) throws ServiceException {
+        List<SimulationParticipant> participants = simulation.getSimulationParticipants();
         Set<Jockey> jockeys = new HashSet<Jockey>();
         for(SimulationParticipant participant : participants) {
             boolean success = jockeys.add(participant.getJockey());
-            if (!success) throw new ServiceException("Jockey can't be in the same Simulation twice");
+            if (!success) {
+              LOGGER.warn("Validation error: Jockeys can't be in the same simulation twice " + simulation);
+              throw new ServiceException("Jockey can't be in the same Simulation twice");
+            }
         }
     }
 
-    private void validateLuckFactor(List<SimulationParticipant> participants) throws ServiceException {
+    private void validateLuckFactor(Simulation simulation) throws ServiceException {
+        List<SimulationParticipant> participants = simulation.getSimulationParticipants();
         for(SimulationParticipant participant : participants) {
             if (participant.getLuckFactor().compareTo(MINLUCKFACTOR) < 0
                     || participant.getLuckFactor().compareTo(MAXLUCKFACTOR) > 0) {
+                LOGGER.warn("Validation error: value of luckFactor has to be between "
+                    + MINLUCKFACTOR + " and " + MAXLUCKFACTOR + " " + simulation);
                 throw new ServiceException("value of luckFactor has to be between "
                     + MINLUCKFACTOR + " and " + MAXLUCKFACTOR);
             }

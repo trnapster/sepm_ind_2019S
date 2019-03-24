@@ -41,6 +41,7 @@ public class SimulationEndpoint {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SimulationResponseDto getOneById(@PathVariable("id") Integer id) {
         LOGGER.info("GET " + BASE_URL + "/" + id);
+        LOGGER.debug("Read simulation with ID: " + id);
         try {
             return simulationMapper.entityToDto(simulationService.findOneById(id));
         } catch (ServiceException e) {
@@ -62,6 +63,8 @@ public class SimulationEndpoint {
             null,
             null);
 
+        LOGGER.debug("Read all simulations with filter: " + filter);
+
         try {
             return simulationMapper.entityToDto(simulationService.getAllFiltered(
                   simulationMapper.dtoToEntity(filter)));
@@ -75,6 +78,7 @@ public class SimulationEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     public SimulationResponseDto createOne(@RequestBody SimulationRequestDto newSimulation) {
         LOGGER.info("POST " + BASE_URL + "/ Body: " + newSimulation);
+        LOGGER.debug("Create new simulation: " + newSimulation);
         try {
             return simulationMapper.entityToDto(simulationService.createOne(simulationMapper.dtoToEntity(newSimulation)));
         } catch (ServiceException e) {

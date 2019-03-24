@@ -100,6 +100,7 @@ public class SimulationDao implements ISimulationDao {
 
         if (rs.next()) {
             insertParticipants(rs.getInt(1), simulation);
+            LOGGER.debug("Simulation inserted into database with ID: " + rs.getInt(1));
             return rs.getInt(1);
         }
         else {
@@ -113,7 +114,7 @@ public class SimulationDao implements ISimulationDao {
             + " values(?, ?, ?, ?, ?, ?, ?, ?)";
 
         for (SimulationParticipant participant : simulation.getSimulationParticipants()) {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             statement.setInt(1, participant.getRank());
             statement.setInt(2, simulationId);
@@ -126,12 +127,21 @@ public class SimulationDao implements ISimulationDao {
             int rows = statement.executeUpdate();
 
             if (rows == 0) throw new SQLException("No new rows generated");
+
+            ResultSet rs = statement.getGeneratedKeys();
+
+            if (rs.next()) {
+                LOGGER.debug("SimulationParticipants inserted into database with ID: " + rs.getInt(1));
+            }
+            else {
+                throw new SQLException("No ID obtained");
+            }
         }
     }
 
     @Override
     public Simulation findOneById(Integer id) throws PersistenceException, NotFoundException {
-        LOGGER.info("Get simulation with id " + id);
+        LOGGER.debug("Reading simulation with public_id: " + id + " from database");
         String sql = "SELECT simulation.id id, simulation.name name," 
             + " simulation.created created, simulation_participant.id participant_id,"
             + " simulation_participant.rank rank, horse.name horse_name,"
@@ -153,19 +163,21 @@ public class SimulationDao implements ISimulationDao {
                 simulation = dbResultToSimulationDto(result, true);
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading simulation with id " + id, e);
+            LOGGER.error("Problem while executing SQL select statement for reading simulation with ID: " + id, e);
             throw new PersistenceException("Could not read simulations with ID: " + id, e);
         }
         if (simulation != null) {
+            LOGGER.info("Read simulation from database:" + simulation);
             return simulation;
         } else {
+            LOGGER.warn("Could not find simulation with ID: " + id);
             throw new NotFoundException("Could not find simulation with ID: " + id);
         }
     }
 
     @Override
     public List<Simulation> getAllFiltered(Simulation filter) throws PersistenceException {
-        LOGGER.info("Get all simulations with filter: " + filter);
+        LOGGER.debug("Reading all simulations with filter: " + filter + " from database");
         String sql = "SELECT * FROM Simulation";
         List<Simulation> simulations = new ArrayList<Simulation>();
 
@@ -185,16 +197,17 @@ public class SimulationDao implements ISimulationDao {
                 Simulation simulation = dbResultToSimulationDto(result, false);
                 simulations.add(simulation);
             }
+            LOGGER.info("Read simulations: " + simulations + " from database");
             return simulations;
         } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL select statement for reading simulation with id ", e);
+            LOGGER.error("Problem while executing SQL select statement for reading simulations with filter: " + filter, e);
             throw new PersistenceException("Could not read simulations", e);
         }
     }
 
     @Override
     public Simulation createOne(Simulation simulation) throws PersistenceException {
-        LOGGER.info("Create simulation: " + simulation);
+        LOGGER.debug("Saving simulation: " + simulation + " in database");
         try {
             return findOneById(insert(simulation));
         } catch (SQLException | NotFoundException e) {
