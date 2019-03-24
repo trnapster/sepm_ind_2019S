@@ -28,13 +28,14 @@ public interface IHorseService {
      * @return the horse that has been created
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
-    Horse createOne(Horse horse) throws ServiceException;
+    Horse createOne(Horse newHorse) throws ServiceException;
 
     /**
      * @param id of the old horse
      * @param updatedHorse the new horse
      * @return the updated horse
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     * @throws NotFoundException will be thrown if the horse could not be found in the system.
      */
     Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException, NotFoundException;
 

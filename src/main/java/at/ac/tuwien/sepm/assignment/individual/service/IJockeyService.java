@@ -28,13 +28,14 @@ public interface IJockeyService {
      * @return the jockey that has been created
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
-    Jockey createOne(Jockey jockey) throws ServiceException;
+    Jockey createOne(Jockey newJockey) throws ServiceException;
 
     /**
      * @param id of the old jockey
      * @param updatedJockey the new jockey
      * @return the updated jockey
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
+     * @throws NotFoundException will be thrown if the jockey could not be found in the system.
      */
     Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException, NotFoundException;
 

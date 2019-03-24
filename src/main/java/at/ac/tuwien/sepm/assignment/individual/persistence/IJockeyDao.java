@@ -34,12 +34,14 @@ public interface IJockeyDao {
      * @param jockey the new jockey
      * @return the jockey that has been updated
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
+     * @throws NotFoundException    will be thrown if the jockey could not be found in the database.
      */
     Jockey updateOne(Jockey jockey) throws PersistenceException, NotFoundException;
 
     /**
      * @param id of the jockey that will be deleted
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
+     * @throws NotFoundException    will be thrown if the jockey could not be found in the database.
      */
     void deleteOne(Integer id) throws PersistenceException, NotFoundException;
 }
