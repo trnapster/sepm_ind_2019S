@@ -13,15 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.math.BigDecimal;
 
 @Component
 public class SimulationValidator implements ISimulationValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulationValidator.class);
 
-    private static final BigDecimal MINLUCKFACTOR = BigDecimal.valueOf(0.95);
-    private static final BigDecimal MAXLUCKFACTOR = BigDecimal.valueOf(1.05);
+    private static final Double MINLUCKFACTOR = 0.95;
+    private static final Double MAXLUCKFACTOR = 1.05;
 
     public SimulationValidator() {
     }

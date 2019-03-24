@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
 
 @Repository
@@ -68,10 +67,10 @@ public class SimulationDao implements ISimulationDao {
                         result.getInt("rank"),
                         horse,
                         jockey,
-                        result.getBigDecimal("avg_speed"),
-                        result.getBigDecimal("horse_speed"),
-                        result.getBigDecimal("skill"),
-                        result.getBigDecimal("luck_factor"));
+                        result.getDouble("avg_speed"),
+                        result.getDouble("horse_speed"),
+                        result.getDouble("skill"),
+                        result.getDouble("luck_factor"));
                     simulationParticipants.add(simulationParticipant);
                 }
             } while(result.next());
@@ -128,13 +127,10 @@ public class SimulationDao implements ISimulationDao {
                 statement.setInt(2, simulationId);
                 statement.setInt(3, participant.getHorse().getId());
                 statement.setInt(4, participant.getJockey().getId());
-                //statement.setBigDecimal(4, participant.getAvgSpeed());
-                //statement.setBigDecimal(5, participant.getHorseSpeed());
-                //statement.setBigDecimal(6, participant.getSkill());
-                statement.setBigDecimal(5, BigDecimal.valueOf(10.0));
-                statement.setBigDecimal(6, BigDecimal.valueOf(20.0));
-                statement.setBigDecimal(7, BigDecimal.valueOf(30.0));
-                statement.setBigDecimal(8, participant.getLuckFactor());
+                statement.setDouble(5, participant.getAvgSpeed());
+                statement.setDouble(6, participant.getHorseSpeed());
+                statement.setDouble(7, participant.getSkill());
+                statement.setDouble(8, participant.getLuckFactor());
                 int rows = statement.executeUpdate();
 
                 if (rows == 0) throw new PersistenceException("No new rows generated");

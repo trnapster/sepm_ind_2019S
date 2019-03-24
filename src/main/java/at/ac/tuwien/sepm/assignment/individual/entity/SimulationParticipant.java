@@ -5,24 +5,23 @@ import at.ac.tuwien.sepm.assignment.individual.entity.Jockey;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.math.BigDecimal;
 
 public class SimulationParticipant {
     private Integer id;
     private Integer rank;
     private Horse horse;
     private Jockey jockey;
-    private BigDecimal avgSpeed;
-    private BigDecimal horseSpeed;
-    private BigDecimal skill;
-    private BigDecimal luckFactor;
+    private Double avgSpeed;
+    private Double horseSpeed;
+    private Double skill;
+    private Double luckFactor;
 
     public SimulationParticipant() {
     }
 
     public SimulationParticipant(Integer id, Integer rank, Horse horse, 
-            Jockey jockey, BigDecimal avgSpeed, BigDecimal horseSpeed, 
-            BigDecimal skill, BigDecimal luckFactor) {
+            Jockey jockey, Double avgSpeed, Double horseSpeed, 
+            Double skill, Double luckFactor) {
         this.id = id;
         this.rank = rank;
         this.horse = horse;
@@ -65,35 +64,35 @@ public class SimulationParticipant {
         this.jockey = jockey;
     }
 
-    public BigDecimal getAvgSpeed() {
+    public Double getAvgSpeed() {
         return avgSpeed;
     }
 
-    public void setAvgSpeed(BigDecimal avgSpeed) {
+    public void setAvgSpeed(Double avgSpeed) {
         this.avgSpeed = avgSpeed;
     }
 
-    public BigDecimal getHorseSpeed() {
+    public Double getHorseSpeed() {
         return horseSpeed;
     }
 
-    public void setHorseSpeed(BigDecimal horseSpeed) {
+    public void setHorseSpeed(Double horseSpeed) {
         this.horseSpeed = horseSpeed;
     }
 
-    public BigDecimal getSkill() {
+    public Double getSkill() {
         return skill;
     }
 
-    public void setSkill(BigDecimal skill) {
+    public void setSkill(Double skill) {
         this.skill = skill;
     }
 
-    public BigDecimal getLuckFactor() {
+    public Double getLuckFactor() {
         return luckFactor;
     }
 
-    public void setLuckFactor(BigDecimal luckFactor) {
+    public void setLuckFactor(Double luckFactor) {
         this.luckFactor = luckFactor;
     }
 

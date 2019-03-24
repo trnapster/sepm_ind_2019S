@@ -2,17 +2,16 @@ package at.ac.tuwien.sepm.assignment.individual.rest.dto;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.math.BigDecimal;
 
 public class SimulationParticipantDto {
     private Integer horseId;
     private Integer jockeyId;
-    private BigDecimal luckFactor;
+    private Double luckFactor;
 
     public SimulationParticipantDto() {
     }
 
-    public SimulationParticipantDto(Integer horseId, Integer jockeyId, BigDecimal luckFactor) {
+    public SimulationParticipantDto(Integer horseId, Integer jockeyId, Double luckFactor) {
         this.horseId = horseId;
         this.jockeyId = jockeyId;
         this.luckFactor = luckFactor;
@@ -34,11 +33,11 @@ public class SimulationParticipantDto {
         this.jockeyId = jockeyId;
     }
 
-    public BigDecimal getLuckFactor() {
+    public Double getLuckFactor() {
         return luckFactor;
     }
 
-    public void setLuckFactor(BigDecimal luckFactor) {
+    public void setLuckFactor(Double luckFactor) {
         this.luckFactor = luckFactor;
     }
 
