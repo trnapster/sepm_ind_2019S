@@ -66,7 +66,7 @@ public class HorseService implements IHorseService {
     }
 
     @Override
-    public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException {
+    public Horse updateOne(Integer id, Horse updatedHorse) throws ServiceException, NotFoundException {
         LocalDateTime currentTime = LocalDateTime.now();
         updatedHorse.setUpdated(currentTime);
 

@@ -22,8 +22,9 @@ import java.time.LocalDateTime;
 public class HorseDaoTest {
 
     private static final LocalDateTime testTime = LocalDateTime.now();
-    private static final Horse validTestHorse = new Horse(null,"testhorse","breed",40.2344,50.6327,testTime,testTime);
-    private static final Horse invalidTestHorse = new Horse(null,null,"breed",40.2344,50.6327,testTime,testTime);
+    private static final Horse validTestHorse1 = new Horse(null,"testhorse","breed",40.2344,50.6327,testTime,testTime);
+    private static final Horse validTestHorse2 = new Horse(1,"updatedTestHorse","breed",40.2344,50.6327,testTime,testTime);
+    private static final Horse invalidTestHorse1 = new Horse(null,null,"breed",40.2344,50.6327,testTime,testTime);
 
 
     @Autowired
@@ -48,20 +49,48 @@ public class HorseDaoTest {
     @Test
     public void givenValidHorse_whenCreateHorse_thenInsertHorseIntoDatabase()
         throws PersistenceException {
-        Horse dbHorse = horseDao.createOne(validTestHorse);
+        Horse dbHorse = horseDao.createOne(validTestHorse1);
         assertEquals((Integer) 1, dbHorse.getId());
-        assertEquals(validTestHorse.getName(), dbHorse.getName());
-        assertEquals(validTestHorse.getBreed(), dbHorse.getBreed());
-        assertEquals(validTestHorse.getMinSpeed(), dbHorse.getMinSpeed());
-        assertEquals(validTestHorse.getMaxSpeed(), dbHorse.getMaxSpeed());
-        assertEquals(validTestHorse.getCreated(), dbHorse.getCreated());
-        assertEquals(validTestHorse.getUpdated(), dbHorse.getUpdated());
+        assertEquals(validTestHorse1.getName(), dbHorse.getName());
+        assertEquals(validTestHorse1.getBreed(), dbHorse.getBreed());
+        assertEquals(validTestHorse1.getMinSpeed(), dbHorse.getMinSpeed());
+        assertEquals(validTestHorse1.getMaxSpeed(), dbHorse.getMaxSpeed());
+        assertEquals(validTestHorse1.getCreated(), dbHorse.getCreated());
+        assertEquals(validTestHorse1.getUpdated(), dbHorse.getUpdated());
     }
 
     @Test(expected = PersistenceException.class)
     public void givenInvalidHorse_whenCreateHorse_thenPersistenceException()
         throws PersistenceException {
-        Horse dbHorse = horseDao.createOne(invalidTestHorse);
+        Horse dbHorse = horseDao.createOne(invalidTestHorse1);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void givenValidHorseInDatabase_whenDeleteOne_thenHorseNoLongerRetrievable()
+        throws PersistenceException, NotFoundException {
+        Horse dbHorse = horseDao.createOne(validTestHorse1);
+        horseDao.deleteOne(1);
+        horseDao.findOneById(1);
+    }
+    
+    @Test
+    public void givenValidHorseInDatabase_whenUpdateHorse_thenUpdateHorseInDatabaseWithSameId()
+        throws PersistenceException, NotFoundException {
+        horseDao.createOne(validTestHorse1);
+        Horse dbHorse = horseDao.updateOne(validTestHorse2);
+        assertEquals((Integer) 1, dbHorse.getId());
+        assertEquals(validTestHorse2.getName(), dbHorse.getName());
+        assertEquals(validTestHorse2.getBreed(), dbHorse.getBreed());
+        assertEquals(validTestHorse2.getMinSpeed(), dbHorse.getMinSpeed());
+        assertEquals(validTestHorse2.getMaxSpeed(), dbHorse.getMaxSpeed());
+        assertEquals(validTestHorse2.getCreated(), dbHorse.getCreated());
+        assertEquals(validTestHorse2.getUpdated(), dbHorse.getUpdated());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void givenNothing_whenUpdateHorseWhichNotExists_ThenNotFoundException()
+        throws PersistenceException, NotFoundException {
+        Horse dbHorse = horseDao.updateOne(validTestHorse2);
     }
 }
 

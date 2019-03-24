@@ -99,7 +99,7 @@ public class HorseEndpoint {
         LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedHorse);
         try {
             return horseMapper.entityToDto(horseService.updateOne(id, horseMapper.dtoToEntity(updatedHorse)));
-        } catch (ServiceException e) {
+        } catch (ServiceException | NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Error during updating of horse: " + e.getMessage(), e);
         }

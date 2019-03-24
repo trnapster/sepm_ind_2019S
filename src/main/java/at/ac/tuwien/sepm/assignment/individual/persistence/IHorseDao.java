@@ -35,7 +35,7 @@ public interface IHorseDao {
      * @return the horse that has been updated
      * @throws PersistenceException will be thrown if something goes wrong during the database access.
      */
-    Horse updateOne(Horse horse) throws PersistenceException;
+    Horse updateOne(Horse horse) throws PersistenceException, NotFoundException;
 
     /**
      * @param id of the horse that will be deleted
