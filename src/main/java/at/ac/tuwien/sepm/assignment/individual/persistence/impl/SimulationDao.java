@@ -83,61 +83,49 @@ public class SimulationDao implements ISimulationDao {
             simulationParticipants);
     }
 
-    private int insert(Simulation simulation) throws PersistenceException {
+    private int insert(Simulation simulation) throws SQLException, PersistenceException {
         String sql = "INSERT INTO Simulation"
             + " (name, created)"
             + " values(?,?)";
 
-        try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            statement.setString(1, simulation.getName());
-            statement.setTimestamp(2, Timestamp.valueOf(simulation.getCreated()));
-            int rows = statement.executeUpdate();
+        statement.setString(1, simulation.getName());
+        statement.setTimestamp(2, Timestamp.valueOf(simulation.getCreated()));
+        int rows = statement.executeUpdate();
 
-            if (rows == 0) throw new PersistenceException("No new rows generated");
+        if (rows == 0) throw new SQLException("No new rows generated");
 
-            ResultSet rs = statement.getGeneratedKeys();
+        ResultSet rs = statement.getGeneratedKeys();
 
-            if (rs.next()) {
-                insertParticipants(rs.getInt(1), simulation);
-                return rs.getInt(1);
-            }
-            else {
-                throw new PersistenceException("No ID obtained");
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
-            throw new PersistenceException("Could not create simulation: " + simulation, e);
+        if (rs.next()) {
+            insertParticipants(rs.getInt(1), simulation);
+            return rs.getInt(1);
+        }
+        else {
+            throw new SQLException("No ID obtained");
         }
     }
 
-    private void insertParticipants(int simulationId, Simulation simulation) throws PersistenceException {
+    private void insertParticipants(int simulationId, Simulation simulation) throws SQLException, PersistenceException {
         String sql = "INSERT INTO Simulation_participant"
             + " (rank, simulation_id, horse_id, jockey_id, avg_speed, horse_speed, skill, luck_factor)"
             + " values(?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try {
-            for (SimulationParticipant participant : simulation.getSimulationParticipants()) {
-                PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
+        for (SimulationParticipant participant : simulation.getSimulationParticipants()) {
+            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql);
 
-                statement.setInt(1, participant.getRank());
-                statement.setInt(2, simulationId);
-                statement.setInt(3, participant.getHorse().getId());
-                statement.setInt(4, participant.getJockey().getId());
-                statement.setDouble(5, participant.getAvgSpeed());
-                statement.setDouble(6, participant.getHorseSpeed());
-                statement.setDouble(7, participant.getSkill());
-                statement.setDouble(8, participant.getLuckFactor());
-                int rows = statement.executeUpdate();
+            statement.setInt(1, participant.getRank());
+            statement.setInt(2, simulationId);
+            statement.setInt(3, participant.getHorse().getId());
+            statement.setInt(4, participant.getJockey().getId());
+            statement.setDouble(5, participant.getAvgSpeed());
+            statement.setDouble(6, participant.getHorseSpeed());
+            statement.setDouble(7, participant.getSkill());
+            statement.setDouble(8, participant.getLuckFactor());
+            int rows = statement.executeUpdate();
 
-                if (rows == 0) throw new PersistenceException("No new rows generated");
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
-            throw new PersistenceException("Could not create simulation: " + simulation, e);
+            if (rows == 0) throw new SQLException("No new rows generated");
         }
     }
 
@@ -166,12 +154,12 @@ public class SimulationDao implements ISimulationDao {
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL select statement for reading simulation with id " + id, e);
-            throw new PersistenceException("Could not read simulations with id " + id, e);
+            throw new PersistenceException("Could not read simulations with ID: " + id, e);
         }
         if (simulation != null) {
             return simulation;
         } else {
-            throw new NotFoundException("Could not find simulation with id " + id);
+            throw new NotFoundException("Could not find simulation with ID: " + id);
         }
     }
 
@@ -209,7 +197,7 @@ public class SimulationDao implements ISimulationDao {
         LOGGER.info("Create simulation: " + simulation);
         try {
             return findOneById(insert(simulation));
-        } catch (NotFoundException e) {
+        } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting simulation: " + simulation, e);
             throw new PersistenceException("Could not create simulation: " + simulation, e);
         }

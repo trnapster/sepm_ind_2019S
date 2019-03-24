@@ -44,7 +44,7 @@ public class JockeyEndpoint {
             return jockeyMapper.entityToDto(jockeyService.findOneById(id));
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
-                "Error during read jockey with id " + id, e);
+                "Error during read jockey with ID: " + id, e);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during reading jockey: " + e.getMessage(), e);
@@ -95,6 +95,9 @@ public class JockeyEndpoint {
             return jockeyMapper.entityToDto(jockeyService.updateOne(id, jockeyMapper.dtoToEntity(updatedJockey)));
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Error during updating of jockey: " + e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during updating of jockey: " + e.getMessage(), e);
         }
     }

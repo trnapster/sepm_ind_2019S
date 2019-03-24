@@ -66,7 +66,7 @@ public class JockeyService implements IJockeyService {
     }
 
     @Override
-    public Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException {
+    public Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException, NotFoundException {
         LocalDateTime currentTime = LocalDateTime.now();
         updatedJockey.setUpdated(currentTime);
 
@@ -81,13 +81,7 @@ public class JockeyService implements IJockeyService {
                 updatedJockey.setSkill(oldJockey.getSkill());
             }
             updatedJockey.setCreated(oldJockey.getCreated());
-        } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage(), e);
-        } catch (NotFoundException e) {
-            LOGGER.info("No jockey with id " + id);
-        }
 
-        try {
             jockeyValidator.validate(updatedJockey);
             return jockeyDao.updateOne(updatedJockey);
         } catch (PersistenceException e) {

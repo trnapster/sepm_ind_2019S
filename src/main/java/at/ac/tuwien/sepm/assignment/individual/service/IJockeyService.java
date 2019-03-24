@@ -36,7 +36,7 @@ public interface IJockeyService {
      * @return the updated jockey
      * @throws ServiceException  will be thrown if something goes wrong during data processing.
      */
-    Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException;
+    Jockey updateOne(Integer id, Jockey updatedJockey) throws ServiceException, NotFoundException;
 
     /**
      * @param id of jockey that should be deleted

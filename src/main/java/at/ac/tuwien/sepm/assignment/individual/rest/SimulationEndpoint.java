@@ -45,7 +45,7 @@ public class SimulationEndpoint {
             return simulationMapper.entityToDto(simulationService.findOneById(id));
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
-                "Error during read simulation with id " + id, e);
+                "Error during read simulation with ID: " + id, e);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during reading simulation: " + e.getMessage(), e);

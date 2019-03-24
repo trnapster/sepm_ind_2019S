@@ -43,40 +43,35 @@ public class HorseDao implements IHorseDao {
             result.getTimestamp("updated").toLocalDateTime());
     }
 
-    private int insert(Horse horse) throws PersistenceException {
+    private int insert(Horse horse) throws PersistenceException, SQLException {
         String sql = "INSERT INTO Horse "
             + "(public_id, name, breed, min_speed, max_speed, created, updated)"
             + "values(?,?,?,?,?,?,?)";
 
-        try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            if (horse.getId() != null) {
-                statement.setInt(1, horse.getId());
-            }
-            else {
-                statement.setNull(1, Types.INTEGER);
-            }
-            statement.setString(2, horse.getName());
-            statement.setString(3, horse.getBreed());
-            statement.setDouble(4, horse.getMinSpeed());
-            statement.setDouble(5, horse.getMaxSpeed());
-            statement.setTimestamp(6, Timestamp.valueOf(horse.getCreated()));
-            statement.setTimestamp(7, Timestamp.valueOf(horse.getUpdated()));
-            int rows = statement.executeUpdate();
+        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        if (horse.getId() != null) {
+            statement.setInt(1, horse.getId());
+        }
+        else {
+            statement.setNull(1, Types.INTEGER);
+        }
+        statement.setString(2, horse.getName());
+        statement.setString(3, horse.getBreed());
+        statement.setDouble(4, horse.getMinSpeed());
+        statement.setDouble(5, horse.getMaxSpeed());
+        statement.setTimestamp(6, Timestamp.valueOf(horse.getCreated()));
+        statement.setTimestamp(7, Timestamp.valueOf(horse.getUpdated()));
+        int rows = statement.executeUpdate();
 
-            if (rows == 0) throw new SQLException("No new rows generated");
+        if (rows == 0) throw new SQLException("No new rows generated");
 
-            ResultSet rs = statement.getGeneratedKeys();
+        ResultSet rs = statement.getGeneratedKeys();
 
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            else {
-                throw new PersistenceException("No ID obtained");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
-            throw new PersistenceException("Could not create horse: " + horse, e);
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        else {
+            throw new SQLException("No ID obtained");
         }
     }
 
@@ -94,7 +89,7 @@ public class HorseDao implements IHorseDao {
         if (horse != null) {
             return horse;
         } else {
-            throw new NotFoundException("Could not find horse with id " + rowId);
+            throw new NotFoundException("Could not find horse with ID: " + rowId);
         }
     }
 
@@ -122,7 +117,7 @@ public class HorseDao implements IHorseDao {
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL select statement for reading horse with id " + id, e);
-            throw new PersistenceException("Could not read horses with id " + id, e);
+            throw new PersistenceException("Could not read horse with ID: " + id, e);
         }
         if (horse != null) {
             return horse;
@@ -199,7 +194,7 @@ public class HorseDao implements IHorseDao {
             return getRow(insert(horse));
         } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting horse: " + horse, e);
-            throw new PersistenceException("Could not create horse: " + horse, e);
+            throw new PersistenceException("Could not create horse", e);
         }
     }
 
@@ -211,7 +206,7 @@ public class HorseDao implements IHorseDao {
             return getRow(insert(horse));
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL update statement for updating horse with id: " + horse.getId(), e);
-            throw new PersistenceException("Could not update horse with id" + horse.getId(), e);
+            throw new PersistenceException("Could not update horse with ID: " + horse.getId(), e);
         }
     }
 
@@ -222,7 +217,7 @@ public class HorseDao implements IHorseDao {
             obsolete(id);
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL delete statement for deleting horse with id : " + id, e);
-            throw new PersistenceException("Could not delete horse with id" + id, e);
+            throw new PersistenceException("Could not delete horse with ID: " + id, e);
         }
     }
 }

@@ -44,7 +44,7 @@ public class HorseEndpoint {
             return horseMapper.entityToDto(horseService.findOneById(id));
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
-                "Error during read horse with id " + id, e);
+                "Error during read horse with ID: " + id, e);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during reading horse: " + e.getMessage(), e);
@@ -99,8 +99,11 @@ public class HorseEndpoint {
         LOGGER.info("PUT " + BASE_URL + "/" + id + " Body: " + updatedHorse);
         try {
             return horseMapper.entityToDto(horseService.updateOne(id, horseMapper.dtoToEntity(updatedHorse)));
-        } catch (ServiceException | NotFoundException e) {
+        } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Error during updating of horse: " + e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
                 "Error during updating of horse: " + e.getMessage(), e);
         }
     }

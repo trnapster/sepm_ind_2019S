@@ -41,38 +41,33 @@ public class JockeyDao implements IJockeyDao {
             result.getTimestamp("updated").toLocalDateTime());
     }
 
-    private int insert(Jockey jockey) throws PersistenceException {
+    private int insert(Jockey jockey) throws PersistenceException, SQLException {
         String sql = "INSERT INTO Jockey "
             + "(public_id, name, skill, created, updated)"
             + "values(?,?,?,?,?)";
 
-        try {
-            PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            if (jockey.getId() != null) {
-                statement.setInt(1, jockey.getId());
-            }
-            else {
-                statement.setNull(1, Types.INTEGER);
-            }
-            statement.setString(2, jockey.getName());
-            statement.setDouble(3, jockey.getSkill());
-            statement.setTimestamp(4, Timestamp.valueOf(jockey.getCreated()));
-            statement.setTimestamp(5, Timestamp.valueOf(jockey.getUpdated()));
-            int rows = statement.executeUpdate();
+        PreparedStatement statement = dbConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        if (jockey.getId() != null) {
+            statement.setInt(1, jockey.getId());
+        }
+        else {
+            statement.setNull(1, Types.INTEGER);
+        }
+        statement.setString(2, jockey.getName());
+        statement.setDouble(3, jockey.getSkill());
+        statement.setTimestamp(4, Timestamp.valueOf(jockey.getCreated()));
+        statement.setTimestamp(5, Timestamp.valueOf(jockey.getUpdated()));
+        int rows = statement.executeUpdate();
 
-            if (rows == 0) throw new PersistenceException("No new rows generated");
+        if (rows == 0) throw new SQLException("No new rows generated");
 
-            ResultSet rs = statement.getGeneratedKeys();
+        ResultSet rs = statement.getGeneratedKeys();
 
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            else {
-                throw new PersistenceException("No ID obtained");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Problem while executing SQL insert statement for inserting jockey: " + jockey, e);
-            throw new PersistenceException("Could not create jockey: " + jockey, e);
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        else {
+            throw new SQLException("No ID obtained");
         }
     }
 
@@ -90,7 +85,7 @@ public class JockeyDao implements IJockeyDao {
         if (jockey != null) {
             return jockey;
         } else {
-            throw new NotFoundException("Could not find jockey with id " + rowId);
+            throw new NotFoundException("Could not find jockey with ID: " + rowId);
         }
     }
 
@@ -101,7 +96,7 @@ public class JockeyDao implements IJockeyDao {
         statement.setInt(1, id);
         int rows = statement.executeUpdate();
 
-        if (rows == 0) throw new NotFoundException("Could not delete jockey with id: " + id);
+        if (rows == 0) throw new NotFoundException("Could not delete jockey with ID: " + id);
     }
 
     @Override
@@ -118,12 +113,12 @@ public class JockeyDao implements IJockeyDao {
             }
         } catch (SQLException e) {
             LOGGER.error("Problem while executing SQL select statement for reading jockey with id " + id, e);
-            throw new PersistenceException("Could not read jockeys with id " + id, e);
+            throw new PersistenceException("Could not read jockeys with ID: " + id, e);
         }
         if (jockey != null) {
             return jockey;
         } else {
-            throw new NotFoundException("Could not find jockey with id " + id);
+            throw new NotFoundException("Could not find jockey with ID: " + id);
         }
     }
 
@@ -177,7 +172,7 @@ public class JockeyDao implements IJockeyDao {
             return getRow(insert(jockey));
         } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL insert statement for inserting jockey: " + jockey, e);
-            throw new PersistenceException("Could not create jockey: " + jockey, e);
+            throw new PersistenceException("Could not create jockey", e);
         }
     }
 
@@ -189,7 +184,7 @@ public class JockeyDao implements IJockeyDao {
             return getRow(insert(jockey));
         } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL update statement for updating jockey with id: " + jockey.getId(), e);
-            throw new PersistenceException("Could not update jockey with id" + jockey.getId(), e);
+            throw new PersistenceException("Could not update jockey with ID: " + jockey.getId(), e);
         }
     }
 
@@ -200,7 +195,7 @@ public class JockeyDao implements IJockeyDao {
             obsolete(id);
         } catch (SQLException | NotFoundException e) {
             LOGGER.error("Problem while executing SQL delete statement for deleting jockey with id : " + id, e);
-            throw new PersistenceException("Could not delete jockey with id" + id, e);
+            throw new PersistenceException("Could not delete jockey with ID: " + id, e);
         }
     }
 }

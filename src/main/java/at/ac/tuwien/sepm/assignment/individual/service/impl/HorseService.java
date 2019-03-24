@@ -87,13 +87,7 @@ public class HorseService implements IHorseService {
                 updatedHorse.setMaxSpeed(oldHorse.getMaxSpeed());
             }
             updatedHorse.setCreated(oldHorse.getCreated());
-        } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage(), e);
-        } catch (NotFoundException e) {
-            LOGGER.info("No horse with id " + id);
-        }
 
-        try {
             horseValidator.validate(updatedHorse);
             return horseDao.updateOne(updatedHorse);
         } catch (PersistenceException e) {
