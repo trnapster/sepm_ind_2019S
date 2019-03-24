@@ -72,7 +72,7 @@ public class HorseService implements IHorseService {
 
         try {
             Horse oldHorse = horseDao.findOneById(id);
-            updatedHorse.setId(oldHorse.getId());
+            updatedHorse.setId(id);
 
             if (updatedHorse.getName() == null) {
                 updatedHorse.setName(oldHorse.getName());
@@ -95,7 +95,7 @@ public class HorseService implements IHorseService {
 
         try {
             horseValidator.validate(updatedHorse);
-            return horseDao.updateOne(id, updatedHorse);
+            return horseDao.updateOne(updatedHorse);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage(), e);
         }

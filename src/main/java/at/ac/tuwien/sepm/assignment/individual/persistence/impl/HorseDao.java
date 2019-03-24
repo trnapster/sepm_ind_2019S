@@ -204,14 +204,14 @@ public class HorseDao implements IHorseDao {
     }
 
     @Override
-    public Horse updateOne(Integer id, Horse horse) throws PersistenceException {
+    public Horse updateOne(Horse horse) throws PersistenceException {
         LOGGER.info("Update horse: " + horse);
         try {
-            obsolete(id);
+            obsolete(horse.getId());
             return getRow(insert(horse));
         } catch (SQLException | NotFoundException e) {
-            LOGGER.error("Problem while executing SQL update statement for updating horse with id: " + id, e);
-            throw new PersistenceException("Could not update horse with id" + id, e);
+            LOGGER.error("Problem while executing SQL update statement for updating horse with id: " + horse.getId(), e);
+            throw new PersistenceException("Could not update horse with id" + horse.getId(), e);
         }
     }
 
